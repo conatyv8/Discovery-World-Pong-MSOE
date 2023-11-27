@@ -15,8 +15,8 @@ Comments, like this one, are denoted with `\<\!\-\-\- comment here \-\-\>` and w
 
 As a [persona], [I want to]
 
-- **Effort** [0-10]
 - **Priority** [0-10]
+- **Effort** [0-10]
 <!---
 Priorities will be classed between 1 - 10 inclusive, 1 being the highest priority.
 1 - 3: Critical or foundational infrastructure required for operation or maintenance of exhibit
