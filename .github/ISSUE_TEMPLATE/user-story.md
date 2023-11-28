@@ -13,7 +13,7 @@ More information: https://github.com/Rockwell-Automation-Inc/Discovery-World-Pon
 Comments, like this one, are denoted with `\<\!\-\-\- comment here \-\-\>` and will not be displayed
 -->
 
-As a [persona], [I want to]
+As a [persona], [I want to] [because]
 
 
 <!---
