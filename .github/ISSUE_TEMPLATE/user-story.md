@@ -15,6 +15,11 @@ Comments, like this one, are denoted with `\<\!\-\-\- comment here \-\-\>` and w
 
 As a [persona], [I want to]
 
+**Depends** 
+<!---
+Link other Stories or issues that must be completed before this one. You can refer to them by just their number ie `#1` to link to issue 1, and github will automatically link them
+-->
+
 - **Priority** [0-10]
 - **Effort** [0-10]
 <!---
