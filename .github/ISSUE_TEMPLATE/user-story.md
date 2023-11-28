@@ -15,6 +15,13 @@ Comments, like this one, are denoted with `\<\!\-\-\- comment here \-\-\>` and w
 
 As a [persona], [I want to]
 
+
+<!---
+Exhibit Maintainer: A Discovery World employee who is tasked with ensuring the exhibit's functionality
+Developer: A person (Most likely Rockwell Automation employee) tasked with maintaining or updating the exhibit's codebase
+Museum Patron: A Discovery World attendee who is interacting with the exhibit. This persona could further be classified as a young child (5yr to 12yr), teenager (13yr to 19yr), Adult, and/or Parent.
+-->
+
 **Depends** 
 <!---
 Link other Stories or issues that must be completed before this one. You can refer to them by just their number ie `#1` to link to issue 1, and github will automatically link them
