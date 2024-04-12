@@ -72,7 +72,7 @@ function init() {
     exist, and do any precomputing or sizing that aren't model dependent.
     */
     // Create a client instance
-    client = new Paho.MQTT.Client("localhost", 9001, "depthfeedviewer_module");
+    client = new Paho.Client("localhost", 9001, "depthfeedviewer_module");
     // client = new Paho.MQTT.Client("192.168.2.214", 9001, "depthfeedviewer_module");
     // client = new Paho.MQTT.Client("mqtt-broker", 9001, "depthfeedviewer_module");
 
@@ -80,8 +80,10 @@ function init() {
     client.onConnectionLost = onConnectionLost;
     client.onMessageArrived = myMethod; // onMessageArrived;
 
+    //client.reconnect = true;
+
     // connect the client
-    client.connect({onSuccess:onConnect});
+    client.connect({onSuccess:onConnect, reconnect:true});
 
     // canvas for our depth camera image
     d_canvas = document.getElementById("depth");

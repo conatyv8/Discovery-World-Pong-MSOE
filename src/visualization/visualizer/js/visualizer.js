@@ -230,7 +230,7 @@ function init() {
     exist, and do any precomputing or sizing that aren't model dependent.
     */
     // Create a client instance
-    client = new Paho.MQTT.Client("localhost", 9001, "visualizer_module");
+    client = new Paho.Client("localhost", 9001, "visualizer_module");
     // client = new Paho.MQTT.Client("192.168.2.214", 9001, "visualizer_module");
     // client = new Paho.MQTT.Client("mqtt-broker", 9001, "visualizer_module");
 
@@ -239,7 +239,7 @@ function init() {
     client.onMessageArrived = onMessageArrived;
 
     // connect the client
-    client.connect({onSuccess:onConnect});
+    client.connect({onSuccess:onConnect, reconnect:true});
 
     canvas = document.getElementById("visualizer");
     const ctx = canvas.getContext("2d");
