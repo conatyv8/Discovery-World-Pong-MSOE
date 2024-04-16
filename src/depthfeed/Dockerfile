@@ -5,9 +5,9 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /app
 
-COPY shared ./shared
+COPY --from=util . ./shared
 
-COPY depthfeed/requirements.txt .
+COPY requirements.txt .
 
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
@@ -21,7 +21,7 @@ WORKDIR /app
 COPY --from=builder /app .
 COPY --from=builder /opt/venv /opt/venv
 
-COPY depthfeed .
+COPY . .
 
 ENV PATH="/opt/venv/bin:$PATH"
 

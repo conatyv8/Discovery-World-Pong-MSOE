@@ -2,8 +2,8 @@
 FROM python:3.8-slim-bookworm AS builder
 ENV PYTHONDONTWRITEBYTECODE=1
 WORKDIR /app
-COPY shared ./shared
-COPY game/requirements.txt .
+COPY --from=util . ./shared
+COPY requirements.txt .
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN python -m pip install --upgrade pip && python -m pip install --no-compile --no-cache-dir -r requirements.txt 
@@ -15,6 +15,6 @@ FROM base AS final
 WORKDIR /app
 COPY --from=builder /app .
 COPY --from=builder /opt/venv /opt/venv
-COPY game .
+COPY . .
 ENV PATH="/opt/venv/bin:$PATH"
 CMD ["python", "game_driver.py"]

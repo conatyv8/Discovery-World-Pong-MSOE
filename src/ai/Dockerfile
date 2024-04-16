@@ -17,12 +17,12 @@ RUN apt-get update && apt-get install -y ffmpeg libsm6 libxext6
 
 # Install deps
 # TODO: Move this to a multistage build. I can't seem to do this without breaking opencv for some reason
-COPY ai/requirements.txt .
+COPY requirements.txt .
 RUN python3 -m pip install --upgrade pip && python3 -m pip install --no-cache-dir -r requirements.txt 
 
 # Copy additional data 
-COPY shared ./shared
-COPY validation ./validation
+COPY --from=util . ./shared
+COPY --from=validation . ./validation
 
 # Copy source
 COPY ai .

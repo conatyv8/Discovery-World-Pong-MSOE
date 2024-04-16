@@ -7,7 +7,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { arg_heapsort, is_significant } from "../Utils/heap";
 import { getMaxListeners } from "process";
 
-process.setMaxListeners(13);
+//process.setMaxListeners(13);
 
 const mqtt = require('mqtt')
 const client = mqtt.connect(process.env.REACT_APP_URL)
@@ -140,7 +140,7 @@ export default function NNVisualizer (props) {
    * We are retrieving the predefined model weights from the public url as trying to use them through webpack made it spew mad chunks bruh
    */
   const getNN=()=>{
-    fetch('medium.json'
+    fetch('medium.js'
     ,{
       headers : { 
         'Content-Type': 'application/json',

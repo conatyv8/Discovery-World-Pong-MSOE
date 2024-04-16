@@ -10,4 +10,5 @@ FROM nginx:1.25.0
 WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 COPY --from=builder /app/build .
+COPY --from=models . /usr/share/nginx/html/
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

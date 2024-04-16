@@ -5,9 +5,9 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /app
 
-COPY shared ./shared
+COPY --from=util . ./shared
 
-COPY visualization/requirements.txt .
+COPY requirements.txt .
 
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
@@ -20,8 +20,9 @@ WORKDIR /app
 
 COPY --from=builder /app .
 COPY --from=builder /opt/venv /opt/venv
+COPY --from=models . visualizer/models/
 
-COPY visualization .
+COPY . .
 
 ENV PATH="/opt/venv/bin:$PATH"
 

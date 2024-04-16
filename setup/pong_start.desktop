@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Terminal=true
+Name=Pong Start
+Icon=utilities-terminal
+Exec=gnome-terminal -e "bash -c 'cd /opt/pong/setup && ./start.sh;$SHELL'"
+Categories=Application;
