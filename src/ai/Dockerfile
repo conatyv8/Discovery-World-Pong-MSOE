@@ -25,5 +25,5 @@ COPY --from=util . ./shared
 COPY --from=validation . ./validation
 
 # Copy source
-COPY ai .
+COPY . .
 CMD ["python3", "ai_driver.py"]
