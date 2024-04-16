@@ -1,5 +1,6 @@
 #!/bin/bash
 
+ce=docker #podman
 # docker build -t dw_ai -f ./ai/Dockerfile .
 # docker build -t dw_depthfeed -f ./depthfeed/Dockerfile .
 # docker build -t dw_game -f ./game/Dockerfile .
@@ -13,14 +14,14 @@
 # cd ..
 
 
-podman build -t dw_ai -f ./ai/Dockerfile .
-podman build -t dw_depthfeed -f ./depthfeed/Dockerfile .
-podman build -t dw_game -f ./game/Dockerfile .
-podman build -t dw_motion -f ./motion/Dockerfile .
-podman build -t dw_visualization -f ./visualization/Dockerfile .
+$ce build -t dw_ai -f ./ai/Dockerfile .
+$ce build -t dw_depthfeed -f ./depthfeed/Dockerfile .
+$ce build -t dw_game -f ./game/Dockerfile .
+$ce build -t dw_motion -f ./motion/Dockerfile .
+$ce build -t dw_visualization -f ./visualization/Dockerfile .
 cd pong-react
-podman build -t dw_pong-react -f ./Dockerfile .
+$ce build -t dw_pong-react -f ./Dockerfile .
 cd ..
 cd visualization-react
-podman build -t dw_visualization-react -f ./Dockerfile .
+$ce build -t dw_visualization-react -f ./Dockerfile .
 cd ..

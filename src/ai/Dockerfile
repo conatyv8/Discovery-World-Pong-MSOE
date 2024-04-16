@@ -1,21 +1,29 @@
-# This dockerfile was quickly made to dockerize the application it has not been optimized.
-FROM python:3.8-slim-bookworm AS builder
-ENV PYTHONDONTWRITEBYTECODE=1
+FROM tensorflow/tensorflow:2.12.0-gpu as runner
 WORKDIR /app
+
+# Install runtime system deps
+RUN apt-get update && apt-get install -y ffmpeg libsm6 libxext6
+
+# Setup venv. This removes root pip warnings/issues
+# We can't use venvs as this breaks tensorflow, which comes with the base image
+#RUN python -m venv /opt/venv
+#ENV PATH="/opt/venv/bin:$PATH"
+
+# Copy venv from builder
+#COPY --from=builder /opt/venv /opt/venv
+
+# Add copied venv to path
+#ENV PATH="/opt/venv/bin:$PATH"
+
+# Install deps
+# TODO: Move this to a multistage build. I can't seem to do this without breaking opencv for some reason
+COPY ai/requirements.txt .
+RUN python3 -m pip install --upgrade pip && python3 -m pip install --no-cache-dir -r requirements.txt 
+
+# Copy additional data 
 COPY shared ./shared
 COPY validation ./validation
-COPY ai/requirements.txt .
-RUN python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
-RUN python -m pip install --upgrade pip && python -m pip install --no-compile --no-cache-dir -r requirements.txt 
 
-FROM python:3.8-slim-bookworm AS base
-RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
-
-FROM base AS final
-WORKDIR /app
-COPY --from=builder /app .
-COPY --from=builder /opt/venv /opt/venv
+# Copy source
 COPY ai .
-ENV PATH="/opt/venv/bin:$PATH"
-CMD ["python", "ai_driver.py"]
+CMD ["python3", "ai_driver.py"]
