@@ -8,7 +8,7 @@
     "@react-three/drei": "^8.6.3",
     "@react-three/fiber": "^7.0.25",
     "@react-three/postprocessing": "^2.3.2",
-    "@svgr/webpack": "^5.5.0",
+    "@svgr/webpack": "^8.1.0",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
