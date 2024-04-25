@@ -12,7 +12,7 @@ services:
             - ./mqtt-broker/log:/mosquitto/log
         restart: unless-stopped
         networks:
-            - dw_net
+            - pong-network
     mqtt-explorer:
         container_name: mqtt-explorer
         image: smeagolworms4/mqtt-explorer
@@ -22,18 +22,18 @@ services:
             - ./mqtt-explorer/config:/mqtt-explorer/config
         restart: unless-stopped
         networks:
-            - dw_net
-    dw_ai:
-        container_name: dw_ai
-        image: dw_ai:latest
+            - pong-network
+    ai-paddle-control:
+        container_name: ai-paddle-control
+        image: ai-paddle-control:latest
         build: 
-          context: ./src/ai
+          context: ./src/ai-paddle-control
           additional_contexts:
             util: ./src/shared/code
             validation: ./src/shared/validation
         restart: unless-stopped
         networks:
-            - dw_net       
+            - pong-network       
         deploy:
           resources:
             reservations:
@@ -41,21 +41,21 @@ services:
                 - driver: nvidia
                   count: 1
                   capabilities: [gpu]
-    dw_game:
-        container_name: dw_game
-        image: dw_game:latest
+    game-engine:
+        container_name: game-engine
+        image: game-engine:latest
         build: 
-          context: ./src/game
+          context: ./src/game-engine
           additional_contexts:
             util: ./src/shared/code
         restart: unless-stopped
         networks:
-            - dw_net       
-    dw_motion:
-        container_name: dw_motion
-        image: dw_motion:latest
+            - pong-network       
+    human-paddle-control:
+        container_name: human-paddle-control
+        image: human-paddle-control:latest
         build: 
-          context: ./src/motion
+          context: ./src/human-paddle-control
           additional_contexts:
             util: ./src/shared/code
         volumes:
@@ -67,24 +67,24 @@ services:
 #        - "/devices/pci0000:00/0000:00:14.0/usb1/1-8/1-8:1.0/input/input22:/devices/pci0000:00/0000:00:14.0/usb1/1-8/1-8:1.0/input/input22"
         restart: unless-stopped
         networks:
-            - dw_net       
-    dw_depthfeed:
-        container_name: dw_depthfeed
-        image: dw_depthfeed:latest
+            - pong-network       
+    human-visualizer:
+        container_name: human-visualizer
+        image: human-visualizer:latest
         build: 
-          context: ./src/depthfeed
+          context: ./src/human-visualizer
           additional_contexts:
             util: ./src/shared/code
         ports:
             - 5001:8000        
         restart: unless-stopped
         networks:
-            - dw_net       
-    dw_visualization:
-        container_name: dw_visualization
-        image: dw_visualization:latest
+            - pong-network       
+    neural-net-visualizer:
+        container_name: neural-net-visualizer
+        image: neural-net-visualizer:latest
         build: 
-          context: ./src/visualization
+          context: ./src/neural-net-visualizer
           additional_contexts:
             util: ./src/shared/code
             models: ./src/shared/models
@@ -92,29 +92,29 @@ services:
             - 5002:8000        
         restart: unless-stopped
         networks:
-            - dw_net       
-    dw_visualization-react:
-        container_name: dw_visualization-react
-        image: dw_visualization-react:latest
+            - pong-network       
+    clocktower-visualizer:
+        container_name: clocktower-visualizer
+        image: clocktower-visualizer:latest
         build:
-          context: ./src/visualization-react
+          context: ./src/clocktower-visualizer
           additional_contexts:
             models: ./src/shared/models
         ports:
             - 5003:80        
         restart: unless-stopped
         networks:
-            - dw_net       
-    dw_pong-react:
-        container_name: dw_pong-react
-        image: dw_pong-react:latest
-        build: ./src/pong-react
+            - pong-network       
+    gameboard:
+        container_name: gameboard
+        image: gameboard:latest
+        build: ./src/gameboard
         ports:
             - 5000:80        
         restart: unless-stopped
         networks:
-            - dw_net       
+            - pong-network       
 networks:
-    dw_net:
-        name: dw_net
+    pong-network:
+        name: pong-network
         driver: bridge
