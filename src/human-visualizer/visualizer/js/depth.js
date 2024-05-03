@@ -83,7 +83,7 @@ function init() {
     //client.reconnect = true;
 
     // connect the client
-    client.connect({onSuccess:onConnect, reconnect:true});aa
+    client.connect({onSuccess:onConnect, reconnect:true});
 
     // canvas for our depth camera image
     d_canvas = document.getElementById("depth");
