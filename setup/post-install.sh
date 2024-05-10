@@ -138,8 +138,36 @@ git checkout -b main --track origin/main # origin/master is clone's default
 # Setup auto-start functionality
 
 
-# Restart
+# Automatic System Restart
+config_file='/etc/apt/apt.conf.d/50unattended-upgrades'
 
+config_line='Unattended-Upgrade::Automatic-Reboot '
+sudo grep -q "^$config_line" $config_file; greprc=$?
+if [[ $greprc -eq 1 ]]; then
+	echo "Appending Automatic reboot option to $config_file"
+	echo 'Unattended-Upgrade::Automatic-Reboot "true";' | sudo tee -a $config_file
+else
+	echo "Automatic reboot already configured. Not touching that configuration"
+fi
+
+config_line='Unattended-Upgrade::Automatic-Reboot-WithUsers '
+sudo grep -q "^$config_line" $config_file; greprc=$?
+if [[ $greprc -eq 1 ]]; then
+	echo "Appending Automatic Reboot With Users option to $config_file"
+	echo 'Unattended-Upgrade::Automatic-Reboot-WithUsers "true";' | sudo tee -a $config_file
+else
+	echo "Automatic reboot with users already configured. Not touching that configuration"
+fi
+
+config_line='Unattended-Upgrade::Automatic-Reboot-Time '
+sudo grep -q "^$config_line" $config_file; greprc=$?
+if [[ $greprc -eq 1 ]]; then
+	echo "Appending Automatic Reboot time option to $config_file"
+	# UTC - 9pm local (central US) time
+	echo 'Unattended-Upgrade::Automatic-Reboot-Time "02:00";' | sudo tee -a $config_file
+else
+	echo "Automatic reboot time already configured. Not touching that configuration"
+fi
 
 
 ########
