@@ -1,0 +1,24 @@
+name: Physical Twin Deploy
+
+# All testing physical twin(s) use the most current version of the main branch 
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  # Deploy using our `deploy.yml` workflow, which does the brunt of the work.
+  # We are just setting development-specific arguments
+  physical-twin:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      branch: main
+      app_path: /opt/pong
+      server_pub_key: ${{ vars.PHYSICALTWIN_PUBKEY }}
+    secrets:
+      OVPN_PROFILE: ${{ secrets.OVPN_PROFILE }}
+      DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      DEPLOY_USER: ${{ secrets.PHYSICALTWIN_USER }}
+      DEPLOY_HOST: ${{ secrets.PHYSICALTWIN_HOST }}
+
+

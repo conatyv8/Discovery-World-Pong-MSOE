@@ -1,0 +1,109 @@
+name: deploy
+
+# "What determines when this workflow is run?"
+# In this case, this workflow is only run when called by other workflows. These
+# inputs determine the arguments passed by the other workflows
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: false
+        default: 'main'
+        type: string
+      app_path:
+        required: false
+        default: '/opt/pong'
+        type: string
+      server_pub_key:
+        required: true
+        type: string
+    secrets:
+      OVPN_PROFILE:
+        required: true
+      DEPLOY_SSH_KEY:
+        required: true
+      DEPLOY_USER:
+        required: true
+      DEPLOY_HOST:
+        required: true
+
+# Additional variables
+# These are effectively constants that are reused in different steps and won't
+# change between workflow runs
+env:
+  OVPN_FILE: /tmp/deploy.ovpn
+  SSH_KEY_FILENAME: id_ed25519
+
+# Each job runs in parallel, so we only have one job - to deploy the codebase
+# on the provided hardware.
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    # Checkout the source code. This is the standard preamble for most workflows
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # Per openvpn-connect-action reqs
+    - name: Install OpenVPN
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y openvpn openvpn-systemd-resolved
+
+    # Take VPN profile secret and dump it into a file for openvpn to use
+    - name: Setup VPN Profile Files
+      run: |
+        echo "${{ secrets.OVPN_PROFILE }}" > ${{ env.OVPN_FILE }}
+        echo "OVPN Config file length: $(wc -l $OVPN_FILE)"
+
+    - name: Connect to VPN
+      uses: "kota65535/github-openvpn-connect-action@v2"
+      with:
+        config_file: ${{ env.OVPN_FILE }}
+
+    # Setup SSH private key and known_hosts file from secrets
+    - name: Setup SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo  "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/$SSH_KEY_FILENAME
+        chmod 600 ~/.ssh/$SSH_KEY_FILENAME
+        chmod 700 ~/.ssh
+        echo "${{ inputs.server_pub_key }}" >> ~/.ssh/known_hosts
+
+    # Move git to a clean copy of the main branch
+    # This is the most risky part of the deploy and gets more risky the more
+    # dirty the repo is and the more significant the changes are. All the more
+    # reason that pushing to a container registry is the right move
+    - name: Ensure Git is on Proper Branch and Clean
+      env:
+        DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        APP_PATH: ${{ inputs.app_path }}
+        BRANCH: ${{ inputs.branch }}
+      run: ssh $DEPLOY_USER@$DEPLOY_HOST "cd $APP_PATH && git fetch --all --prune && git checkout $BRANCH && git reset --hard origin/$BRANCH"
+
+    # Now that the we are on the most current version, a docker compose up will
+    # rebuild and redeploy containers if they have changed
+    - name: Update Running Docker Containers
+      env:
+        DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        APP_PATH: ${{ inputs.app_path }}
+      run: ssh $DEPLOY_USER@$DEPLOY_HOST "cd $APP_PATH && docker compose up -d --build --remove-orphans"
+
+    # Refresh each browser window to reload code running in the browsers
+    # Can this be replaced by a MQTT command or something?
+    - name: Update Browser Windows
+      env:
+        DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        APP_PATH: ${{ inputs.app_path }}
+      run: ssh $DEPLOY_USER@$DEPLOY_HOST "cd $APP_PATH && ./setup/refresh-browsers.sh"
+
+    # Purge secret files. Likely not needed, but makes me feel safe
+    - name: Cleanup Secrets
+      if: always()
+      run: |
+        shred -f -u $OVPN_FILE
+        shred -f -u ~/.ssh/$SSH_KEY_FILENAME
+
