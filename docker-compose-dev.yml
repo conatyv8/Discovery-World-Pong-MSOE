@@ -1,3 +1,10 @@
+# Currently this file is just the normal `docker-compose.yml`
+# file with additional services which would be better done
+# by just having the extra services and an extends keyword. However,
+# the future plan is to replace the human paddle control mechanisms
+# with a keyboard control to facilite testing without the depth
+# camera, which would involve removing services. 
+
 services:
     mqtt-broker:
         container_name: mqtt-broker
@@ -13,7 +20,17 @@ services:
         restart: unless-stopped
         networks:
             - pong-network
-   ai-paddle-control:
+    mqtt-explorer:
+        container_name: mqtt-explorer
+        image: smeagolworms4/mqtt-explorer
+        ports:
+            - 4000:4000
+        volumes:
+            - ./development-tools/mqtt-explorer/config:/mqtt-explorer/config
+        restart: unless-stopped
+        networks:
+            - pong-network
+    ai-paddle-control:
         container_name: ai-paddle-control
         image: ai-paddle-control:latest
         build: 
