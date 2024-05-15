@@ -13,7 +13,7 @@ services:
         restart: unless-stopped
         networks:
             - pong-network
-   ai-paddle-control:
+    ai-paddle-control:
         container_name: ai-paddle-control
         image: ai-paddle-control:latest
         build: 
