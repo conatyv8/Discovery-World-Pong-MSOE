@@ -13,7 +13,8 @@ do
   if [ $rc -eq 0 ]; then
     echo "Refreshing $w"
     xdotool windowactivate --sync $windowid 
-    xdotool key --window $windowid F5 
+    xdotool key --window $windowid ctrl+shift+r
+    sleep 2
   else
     # Warn if window is not available. Also print out wanrning in GitHub 
     # Actions warning syntax so that actions will pick it up

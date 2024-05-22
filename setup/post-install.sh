@@ -135,8 +135,13 @@ git remote add origin git@github.com:Rockwell-Automation-Inc/Discovery-World-Pon
 git fetch origin
 git checkout -b main --track origin/main # origin/master is clone's default
 
-# Setup auto-start functionality
+# Add Firefox profiles to use in open_windows.sh
+/opt/pong/setup/create_profiles.sh 
 
+# Setup auto-start functionality
+sudo cp /opt/setup/pong.service /etc/systemd/system/pong.service
+sudo systemctl daemon-reload
+sudo systemctl enable my-custom-script.service
 
 # Automatic System Restart
 config_file='/etc/apt/apt.conf.d/50unattended-upgrades'
