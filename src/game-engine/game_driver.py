@@ -18,10 +18,10 @@ This file is the driver for the game component.
 It polls the agents for actions and advances frames and game state at a steady rate.
 """
 class GameDriver:
-    def run(self, level):
+    def run(self, level, pong_environment):
         print("running level: ", level)
         # The Pong environment
-        pong_environment = Pong(config=self.config, level = level)
+        #pong_environment = Pong(config=self.config, level = level)  Create pong_environment outside of this method to tracking paddle movement after the game is over
         currentFPS = self.config.GAME_FPS #(level * 40) + 40#Config.GAME_FPS 
 
         # if one of our players is Bot
@@ -43,7 +43,7 @@ class GameDriver:
         done = False
         last_frame_time = time.time()
         while not done:
-            action_l, motion_l, prob_l = self.bottom_agent.act()
+            action_l, motion_l, prob_l = self.bottom_agent.act() #action_1 will be 3 when bottom_agent is MotionPlayer
             for i in range(self.config.AI_FRAME_INTERVAL):
                 rendered_frame = pong_environment.frames
                 #Timer.start("act")
@@ -186,9 +186,11 @@ def main(config=Config.instance()):
             subscriber.emit_game_state(1) # ready
             subscriber.reset_game_state()
             time.sleep(3) # delay for start here - gives a chance for components to give feedback
+
             subscriber.emit_game_state(2) # running
             time.sleep(1)
-            game_instance.run(level) # RUN LEVEL (1)
+            pong_environment = Pong(config = config, level = level) #pong_environment is creating in here to allow the main loop to continue to update paddle position.
+            game_instance.run(level, pong_environment) # RUN LEVEL (1)
 
             if level == 2: # level == 3
                 level = 0 # the game is over so we need to reset to level 0 (the state before the game starts
@@ -206,3 +208,10 @@ if __name__ == "__main__":
 
 
 
+#GameDriver main creates gameDriver instance.
+    #__init assign bottom_agent to be MotionPlayer
+    #gameDriver instance call run method
+    #    self.bottom_agent.act() return action_1 = 3, motion_1 = self.subscriber.motion_position
+    #    pong_enviroment.step(...) creates Paddles and Balls, where bottom (paddle) is assigned to MotionPlayer instance 
+    #       self.bottom.handle_action ("Absolute" , self.subscriber.motion_position) updates paddle position on gameboard 
+    #       Class Paddle handle_action(...) moves the paddle, Left, Right, None or Absolution position

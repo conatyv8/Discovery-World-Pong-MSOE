@@ -59,6 +59,8 @@ class MotionPlayer:
 
     def move(self):
         return 3 # the code for moving based on depth value, which is different than fixed speed movement
+                 #["LEFT"(0), "RIGHT"(1), "NONE"(2), "ABSOLUTE"(3)] defines in Config.py
+
 
 class RandomPlayer:
     """
@@ -114,9 +116,9 @@ class BotPlayer:
     def move(self):
         if self.always_follow:
             if self.ball.x > self.paddle.x:
-                return 1
+                return 1 #Right
             elif self.ball.x < self.paddle.x:
-                return 0
+                return 0 #Left
             else:
                 self.last_move = abs(self.last_move - 1)
                 return self.last_move
