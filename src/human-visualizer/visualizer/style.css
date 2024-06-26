@@ -7,16 +7,25 @@
     height: 100%;
     overflow: hidden;
  }
+
+ #info {
+    margin-top: 25px;
+    margin-left: 25px;
+    margin-right: 25px;
+    margin-bottom: 0px;
+    text-align: center;
+    font-family: 'Barlow', sans-serif;
+ }
  
  canvas {
     position:relative;
  }
  
- .depth {
+ #depth {
      width: 100%;
      position:absolute;
  }
- .wrapper {
+ #wrapper {
     position:relative;
  }
  

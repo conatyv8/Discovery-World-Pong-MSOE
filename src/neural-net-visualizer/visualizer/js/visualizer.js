@@ -1,25 +1,25 @@
 // called when the client connects
 function onConnect() {
-  // Once a connection has been made, make a subscription and send a message.
-  console.log("Connected to MQTT broker");
-  client.subscribe("game/level");
-  client.subscribe("ai/activation");
+    // Once a connection has been made, make a subscription and send a message.
+    console.log("Connected to MQTT broker");
+    client.subscribe("game/level");
+    client.subscribe("ai/activation");
 }
 
 // called when the client loses its connection
 function onConnectionLost(responseObject) {
-  if (responseObject.errorCode !== 0) {
-    console.log("onConnectionLost:"+responseObject.errorMessage);
-  }
+    if (responseObject.errorCode !== 0) {
+        console.log("onConnectionLost:" + responseObject.errorMessage);
+    }
 }
 
 // called when a message arrives
 function onMessageArrived(message) {
-    if(message.destinationName === "ai/activation") {
+    if (message.destinationName === "ai/activation") {
         // Save the raw string instead of parsing because we may skip this
         // frame if we get a new one before the next render - no need to waste cycles
         last_activations = message.payloadString;
-    } else if(message.destinationName === "game/level") {
+    } else if (message.destinationName === "game/level") {
         level = JSON.parse(message.payloadString)["level"];
         model_initialized = false;
         init_model(level);
@@ -35,12 +35,12 @@ function render_game(ctx, frame, image_upscale = 4) {
     const frame_ctx = frameCanvas.getContext("2d");
     const imageData = frame_ctx.getImageData(0, 0, frame_width, frame_height);
     const frameData = imageData.data;
-    for(let i = 0; i < frame.length; i++) {
+    for (let i = 0; i < frame.length; i++) {
         idx = i * 4;
         frameData[idx] = frame[i]; // Red
-        frameData[idx+1] = frame[i]; // Green
-        frameData[idx+2] = frame[i]; // Blue
-        frameData[idx+3] = 255; // Alpha
+        frameData[idx + 1] = frame[i]; // Green
+        frameData[idx + 2] = frame[i]; // Blue
+        frameData[idx + 3] = 255; // Alpha
     }
 
     frame_ctx.putImageData(imageData, 0, 0);
@@ -55,7 +55,7 @@ function render_weight_image(ctx, hl_activations, image_upscale = 4) {
     // Select its weight with respect to each input pixel
     let frame = get_weight_map(hidden_weights, top_neuron)
     max_weight = max(frame)
-    frame = scale(frame, 127/max_weight);
+    frame = scale(frame, 127 / max_weight);
     frame = add(frame, 127)
     //Render game frame
     const frame_width = 192 / 2; // Base state dimension, scaled down by two
@@ -67,19 +67,19 @@ function render_weight_image(ctx, hl_activations, image_upscale = 4) {
     const frame_ctx = weightImageCanvas.getContext("2d");
     const imageData = frame_ctx.getImageData(0, 0, frame_width, frame_height);
     const frameData = imageData.data;
-    for(let i = 0; i < frame.length; i++) {
+    for (let i = 0; i < frame.length; i++) {
         idx = i * 4;
         frameData[idx] = frame[i]; // Red
-        frameData[idx+1] = frame[i]; // Green
-        frameData[idx+2] = frame[i]; // Blue
-        frameData[idx+3] = Math.max((frame[i] - 64), 0); // Alpha
+        frameData[idx + 1] = frame[i]; // Green
+        frameData[idx + 2] = frame[i]; // Blue
+        frameData[idx + 3] = Math.max((frame[i] - 64), 0); // Alpha
     }
 
     frame_ctx.putImageData(imageData, 0, 0);
 
     img_w = frame_width * image_upscale;
     img_h = frame_height * image_upscale;
-    img_x = (canvas_width - img_w)/2;
+    img_x = (canvas_width - img_w) / 2;
     img_y = canvas_height - (img_h + (canvas_height / 10));
 
     ctx.drawImage(weightImageCanvas, img_x, img_y, img_w, img_h);
@@ -91,9 +91,9 @@ function render_tick(ctx, render_frame, state_frame, hl_activations, ol_activati
 
     // Update rendered probabilities
     percent_prob = scale(ol_activations, 100)
-    up_prob = parseFloat(percent_prob[0]).toFixed(2)+"%"
-    down_prob = parseFloat(percent_prob[1]).toFixed(2)+"%"
-    none_prob = parseFloat(percent_prob[2]).toFixed(2)+"%"
+    up_prob = parseFloat(percent_prob[0]).toFixed(2) + "%"
+    down_prob = parseFloat(percent_prob[1]).toFixed(2) + "%"
+    none_prob = parseFloat(percent_prob[2]).toFixed(2) + "%"
 
     let t = timer("render_game");
     // Render game frame
@@ -134,24 +134,24 @@ function render_tick(ctx, render_frame, state_frame, hl_activations, ol_activati
 
     // Create dynamic labels for inference confidence
     up_pos = out_pos[0]
-    down_pos = out_pos[1]
-    none_pos = out_pos[2]
+    none_pos = out_pos[1]
+    down_pos = out_pos[2]
     ctx.font = TITLE_FONT;
     ctx.textAlign = "center";
-    ctx.fillText(up_prob, up_pos[0], up_pos[1]-40);
-    ctx.fillText(down_prob, down_pos[0], down_pos[1]-40);
-    ctx.fillText(none_prob, none_pos[0], none_pos[1]-40);
+    ctx.fillText(up_prob, up_pos[0], up_pos[1] - 40);
+    ctx.fillText(down_prob, down_pos[0], down_pos[1] - 40);
+    ctx.fillText(none_prob, none_pos[0], none_pos[1] - 40);
 }
 
 function render_loop() {
-    if(last_activations && last_activations != last_rendered_activations) {
+    if (last_activations && last_activations != last_rendered_activations) {
         const ctx = canvas.getContext("2d");
         const [state_frame, hl_activations, ol_activations] = JSON.parse(last_activations);
         render_tick(ctx, state_frame, state_frame, hl_activations, ol_activations);
         last_rendered_activations = last_activations;
     }
     // Break out of render loop if we receive a new model to render
-    if(model_initialized) {
+    if (model_initialized) {
         requestAnimationFrame(render_loop);
     }
 }
@@ -161,14 +161,14 @@ function init_model(level) {
     This initialization runs any time we receive a new model structure.
     It renders its weights and precomputes any convenient values for later use in realtime rendering.
     */
-    if(!initialized) {
+    if (!initialized) {
         // Busy wait if we receive a new model before the normal init is run.
         init_model(structure);
     } else {
         level += 1;
         const ctx = canvas.getContext("2d");
         structure = null;
-        switch(level) {
+        switch (level) {
             case 1:
                 structure = easy_model;
                 break;
@@ -194,8 +194,8 @@ function init_model(level) {
 
         // Calculate positions of individual pixels, for use as a "layer" to connect edges
         pixel_pos = []
-        for(let y = 0; y < pixel_dims[1]; y++) {
-            for(let x = 0; x < pixel_dims[0]; x++) {
+        for (let y = 0; y < pixel_dims[1]; y++) {
+            for (let x = 0; x < pixel_dims[0]; x++) {
                 x_pos = (x * pixel_step) + top_corner[0] + (pixel_step / 2)
                 y_pos = (y * pixel_step) + top_corner[1] + (pixel_step / 2)
                 pixel_pos.push([x_pos, y_pos])
@@ -210,7 +210,8 @@ function init_model(level) {
         significant_ow = is_significant(output_weights, 0.3)
 
         // Determine appropriate base size for a neuron based on minimum allowable padding for a specific layer
-        NEURON_SIZE = (canvas_height - (hidden_biases.length * MIN_PADDING)) / (hidden_biases.length)
+        // Disalow negative neuron sizes, if there is not enough room, the neurons will overlap
+        NEURON_SIZE = max([(canvas_width - (hidden_biases.length * MIN_PADDING)) / (hidden_biases.length), 1]);
 
         // Render neuron nodes, saving calculated positions for weight rendering
         hidden_pos = render_layer(ctx, render_rescale(hidden_biases, 1), 0,
@@ -231,28 +232,26 @@ function init() {
     */
     // Create a client instance
     client = new Paho.Client("localhost", 9001, "neural-net-visualizer");
-    // client = new Paho.MQTT.Client("192.168.2.214", 9001, "visualizer_module");
-    // client = new Paho.MQTT.Client("mqtt-broker", 9001, "visualizer_module");
 
     // set callback handlers
     client.onConnectionLost = onConnectionLost;
     client.onMessageArrived = onMessageArrived;
 
     // connect the client
-    client.connect({onSuccess:onConnect, reconnect:true});
+    client.connect({ onSuccess: onConnect, reconnect: true });
 
     canvas = document.getElementById("visualizer");
     const ctx = canvas.getContext("2d");
 
-    // Size canvas to full screen
-    canvas.width = document.body.clientWidth;
-    canvas.height = document.body.clientHeight;
+    const visualizer_div = document.querySelector('.visualization');
+    canvas.width = visualizer_div.offsetWidth;
+    canvas.height = visualizer_div.offsetHeight;
 
     // Save canvas dimensions
-    canvas_width = document.body.clientWidth;
-    canvas_height = document.body.clientHeight;
+    canvas_width = canvas.width;
+    canvas_height = canvas.height;
 
-    img_x = (canvas_width - img_w)/2;
+    img_x = (canvas_width - img_w) / 2;
     img_y = canvas_height - (img_h + (canvas_height / 10));
 
     // We will update this with game state pixels and embed it on the visualizer canvas
@@ -295,7 +294,7 @@ var NEURON_SIZE = null;
 var MIN_PADDING = 3;
 var HIDDEN_LAYER_Y = 0.35;
 var OUTPUT_LAYER_Y = 0.1;
-var OUTPUT_LABELS = ["LEFT", "RIGHT", "NONE"]
+var OUTPUT_LABELS = ["LEFT", "NONE", "RIGHT"]
 var image_upscale = 4;
 var frame_width = 192 / 2; // Base state dimension, scaled down by two
 var frame_height = 160 / 2;
