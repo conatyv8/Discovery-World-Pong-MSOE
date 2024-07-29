@@ -85,6 +85,8 @@ services:
         ports:
             - 5001:8000        
         restart: unless-stopped
+        environment:
+            - DEBUG=1
         networks:
             - pong-network       
     neural-net-visualizer:

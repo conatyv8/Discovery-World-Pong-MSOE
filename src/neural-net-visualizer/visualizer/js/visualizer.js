@@ -11,6 +11,13 @@ function onConnectionLost(responseObject) {
     if (responseObject.errorCode !== 0) {
         console.log("onConnectionLost:" + responseObject.errorMessage);
     }
+    // After long periods of play, we run into a strange failure:
+    // `AMQJS0005E Internal Error`
+    // Little further information provided and no stack trace. This is a bandaid
+    if (responseObject.errorCode === 5){
+        console.log("Caught Error Code 5, refreshing browser")
+        window.location.reload(true);
+    }
 }
 
 // called when a message arrives

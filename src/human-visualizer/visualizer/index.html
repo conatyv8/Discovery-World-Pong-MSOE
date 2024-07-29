@@ -9,11 +9,10 @@
     <meta name="author" content="Alexander Neuwirth">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Barlow&display=swap" rel="stylesheet">
-    <!-- To update integrity hash: https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.1.0/paho-mqtt.js"
-        integrity="sha384-Ljvyu+Te8lhYTZmOKkTuUHeKBt1i/g8TBMb1lDHfgOlI3c0ZTKEN9KVPBM/priIP" crossorigin="anonymous"
-        type="text/javascript">
-        </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.0.0-beta.3/mqtt.min.js"
+        integrity="sha384-hELSIBNpNv6bWwHPNLtT924lTndbc8WdZcK3tF4qXshE1XKEx+vfC7Y+/w7HjvUv"
+        crossorigin="anonymous">
+    </script>
 </head>
 
 <body>
@@ -28,6 +27,7 @@
     </div>
     <div id="wrapper">
         <canvas id="depth"></canvas>
+        <p id="msg">Connecting...</p>
     </div>
     <script src="js/depth.js"></script>
 </body>
