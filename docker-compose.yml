@@ -67,8 +67,8 @@ services:
             util: ./src/shared/code
         ports:
             - 5001:8000
-        environment:
-            - DEBUG=0
+#       environment:
+#           - DEBUG=0 # Not used right now
         restart: unless-stopped
         networks:
             - pong-network       

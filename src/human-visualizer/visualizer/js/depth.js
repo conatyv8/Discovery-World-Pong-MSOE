@@ -1,4 +1,4 @@
-const DEBUG = process.env.DEBUG || 0;
+const DEBUG = 0;
 
 // https://stackoverflow.com/a/23105310
 // Draw image scaled to the screen and centered
