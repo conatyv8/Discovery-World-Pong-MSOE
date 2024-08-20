@@ -113,6 +113,6 @@ class Controller:
             filename -- the audio file filename.
         """
         Thread(
-            target=self.remove,
+            target=self.remove_file,
             args=(filename,),
         ).start()
