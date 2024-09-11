@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:2.12.0-gpu as runner
+FROM tensorflow/tensorflow:2.13.0-gpu as runner
 WORKDIR /app
 
 # Install runtime system deps

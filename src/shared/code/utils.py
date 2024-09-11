@@ -62,7 +62,7 @@ def preprocess_gym(I):
     I[I == 144] = 0 # erase background (background type 1)
     I[I == 109] = 0 # erase background (background type 2)
     I[I != 0] = 1 # everything else (paddles, ball) just set to 1
-    return I.astype(np.float)
+    return I.astype(float)
 
 
 def preprocess_custom(I):
@@ -71,7 +71,7 @@ def preprocess_custom(I):
     state = cv2.resize(state, (w // 2, h // 2))
     state[state < 250] = 0
     state[state == 255] = 1
-    return state.astype(np.float)
+    return state.astype(float)
 
 
 def encode_action(action):
