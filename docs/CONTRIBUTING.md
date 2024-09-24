@@ -1,7 +1,43 @@
 # Contributing
 
 ## Repository Structure
-TBD
+/Pong
+    /certs
+    /development-tools
+    /docs
+         /api
+            /overview
+                docs_struct.md
+                vision.md
+            /mqtt
+                /mqtt-broker
+            /ai-paddle-control
+            /autostart
+            /game-engine
+            /audio-engine
+            /gameboard
+            /human-paddle-control
+            /visualizers
+        /assets
+           images
+        readme.md
+        contributing.md
+        /guides
+        /Troubleshooting
+            /Known Issues
+    /setup
+    /src
+        /ai-paddle-control
+        /audio-engine
+        /clocktower-visualizer
+        /game-engine
+        /gameboard
+        /human-paddle-control
+        /human-visualizer
+        /mqtt-broker
+        /neural-net-visualizer
+        /shared
+    README.md
 
 ## Branch Structure
 This repo will use a trunk based workflow with "main" being the trunk.
@@ -26,3 +62,7 @@ WIP PRs without activity for a significant period of time will be closed.
 Each PR must be reviewed by at least one maintainer before being accepted and merged.
 Upon merging, the "Squash and Merge" option should be selected to maintain a clean git history.
 After merging, the branch should be deleted if was not pulled from a fork.
+
+## Documentation Structure
+Each module requires its own api documentation; an overview, the implementation, related tutorials and links, and stored in docs folder in .md format for ease of exporting.
+Each pull request affecting modules performance/substance requires an addition/editing of documentation.
