@@ -24,7 +24,7 @@ The policy gradient (PG) algorithm is a on-policy reinforcement learning method 
 The policy gradient algorithm works by updating policy parameters via stochastic gradient ascent on policy performance over # of episodes.
 A stochastic policy like this one, the control of the paddle is selected based on the encountered state and a probability distribution, vs. a deterministic policy where the same control is used for the same input state/
 
-The PGAgent class applies this algorithm to the data set from each model level using tensorflow libraries. This class was partially adapted from https://github.com/keon/policy-gradient/blob/master/pg.py. see **docs/guides/tensorflow.md** for more ML resources.
+The PGAgent class applies this algorithm to the data set from each model level using tensorflow libraries. This class was partially adapted from https://github.com/keon/policy-gradient/blob/master/pg.py. see [docs/guides/tensorflow.md] for more ML resources.
 
 ## How to retrain AI Model Results
 

@@ -64,5 +64,12 @@ Upon merging, the "Squash and Merge" option should be selected to maintain a cle
 After merging, the branch should be deleted if was not pulled from a fork.
 
 ## Documentation Structure
+
 Each module requires its own api documentation; an overview, the implementation, related tutorials and links, and stored in docs folder in .md format for ease of exporting.
+
 Each pull request affecting modules performance/substance requires an addition/editing of documentation.
+
+commenting standard:
+comments for every function: input, output, parameters, use
+comments for every class describing members
+inline comments for code describing purpose
