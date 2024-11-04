@@ -33,7 +33,6 @@ autoinstall:
     install: false
   identity:
     hostname: discovery-world-pong-twin
-    password: ***REMOVED***
     realname: Discovery World Pong
     username: dwpong
   kernel:
