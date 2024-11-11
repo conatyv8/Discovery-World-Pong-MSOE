@@ -24,13 +24,13 @@ services:
         restart: unless-stopped
         networks:
             - pong-network       
-        deploy:
-          resources:
-            reservations:
-              devices:
-                - driver: nvidia
-                  count: 1
-                  capabilities: [gpu]
+        #deploy:
+         # resources:
+          #  reservations:
+           #   devices:
+            #    - driver: nvidia
+             #     count: 1
+              #    capabilities: [gpu]
     game-engine:
         container_name: game-engine
         image: game-engine:latest
@@ -111,8 +111,8 @@ services:
         image: audio-engine:latest
         build: 
           context: ./src/audio-engine
-        devices:
-         - "/dev/snd"
+        #devices:
+         #- "/dev/snd"
         restart: unless-stopped
         networks:
             - pong-network                       
