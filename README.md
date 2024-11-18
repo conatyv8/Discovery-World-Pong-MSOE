@@ -2,8 +2,8 @@
 This forked repository contains the code behind the Rockwell Automation "Pong" exhibit at the Discovery World Museum in Milwaukee, WI. This forked repo is where the MSOE Senior Design Team 2024-2025 is making their contributions to the exhibit. The names of the Senior Design Team are as follows:
 - Virginia Conaty
 - Matthew Wehman
+- Chris Rebusit
 - Priya Audipudy
--
 -
 
 An overview of this repo's history and goals can be found in the [vision.md](/docs/vision.md) document.
