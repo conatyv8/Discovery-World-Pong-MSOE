@@ -6,10 +6,10 @@ This forked repository contains the code behind the Rockwell Automation "Pong" e
 - Priya Audipudy
 -
 
-An overview of this repo's history and goals can be found in the [vision.md](/docs/vision.md) document.
+An overview of this repo's history and goals can be found in the [vision.md](/docs/API/overview/vision.md) document.
 
 # Contributing
-See [Contributing.md](CONTRIBUTING.md)
+See [Contributing.md](/docs/CONTRIBUTING.md)
 
 Steps from Aaron Neustedter for MSOE Senior Design Team to contribute to the main repo
 1. Fork the repository.
