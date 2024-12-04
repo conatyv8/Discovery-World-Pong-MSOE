@@ -4,7 +4,7 @@ This forked repository contains the code behind the Rockwell Automation "Pong" e
 - Matthew Wehman
 - Chris Rebusit
 - Priya Audipudy
--
+- Eden Basso
 
 An overview of this repo's history and goals can be found in the [vision.md](/docs/API/overview/vision.md) document.
 
