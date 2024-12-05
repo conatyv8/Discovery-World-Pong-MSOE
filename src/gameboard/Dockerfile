@@ -1,5 +1,15 @@
 # This dockerfile was quickly made to dockerize the application it has not been optimized.
-FROM node:17 AS builder
+ARG CERTS=default
+
+FROM node:17 AS ssl_default
+
+FROM ssl_default AS ssl_zscaler
+COPY --from=certs . ./certs
+RUN cp ./certs/zscaler.crt /usr/local/share/ca-certificates/
+RUN update-ca-certificates
+ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+
+FROM ssl_${CERTS} AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
