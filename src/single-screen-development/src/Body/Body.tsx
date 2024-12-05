@@ -5,7 +5,7 @@ import {
   selectDisplayTab,
   selectVerticalScreens,
 } from "../redux/exhibitScreensSlice";
-import GameScreen from "./GameScreen";
+import GameScreen from "./GameScreen/GameScreen";
 import ExhibitScreen from "./Screen Grid/Screen/ExhibitScreen";
 function Body() {
   const screenState = useAppSelector(selectVerticalScreens);
