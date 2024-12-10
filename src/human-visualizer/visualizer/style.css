@@ -1,31 +1,23 @@
-* {
-    margin: 0;
-    padding: 0;
- }
- 
- body, html {
-    height: 100%;
-    overflow: hidden;
- }
+@font-face {
+    font-family: Trade Gothic;
+    src: url(font/TradeGothicLTStd-Cn18.otf);
+}
 
- #info, #msg {
-    margin-top: 25px;
-    margin-left: 25px;
-    margin-right: 25px;
-    margin-bottom: 0px;
+body {
+    background-image: url('images/AutoEverywhere_Background.png');
+    font-family: "Trade Gothic", serif;
+}
+
+#content {
+    align-content: center;
+}
+
+#header {
+    color: white;
+    font-size: 64px;
+    font-weight: 400;
+    line-height: 64px;
+    word-wrap: break-word;
     text-align: center;
-    font-family: 'Barlow', sans-serif;
- }
- 
- canvas {
-    position:relative;
- }
- 
- #depth {
-     width: 100%;
-     position:absolute;
- }
- #wrapper {
-    position:relative;
- }
- 
+    margin-top: 4%;
+}
