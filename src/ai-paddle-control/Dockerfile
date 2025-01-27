@@ -1,4 +1,18 @@
-FROM tensorflow/tensorflow:2.13.0-gpu as runner
+ARG CERTS=default
+
+FROM tensorflow/tensorflow:2.13.0-gpu AS ssl_default
+
+FROM ssl_default AS ssl_zscaler
+COPY --from=certs . ./certs
+RUN cp ./certs/zscaler.crt /usr/local/share/ca-certificates/
+RUN update-ca-certificates
+ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+
+FROM ssl_${CERTS} AS runner
+
+LABEL org.opencontainers.image.source=https://github.com/aaron97neu/Discovery-World-Pong
+LABEL org.opencontainers.image.licenses=MIT
+
 WORKDIR /app
 
 # Install runtime system deps
