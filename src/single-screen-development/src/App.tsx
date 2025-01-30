@@ -7,6 +7,7 @@ import "./App.css";
 import { store } from "./app/store";
 import Body from "./Body/Body";
 import Header from "./Header/Header";
+import LogStream from "./LogStream";
 
 const darkTheme = createTheme({
   palette: {
@@ -19,6 +20,7 @@ const App: FC = () => {
     <Provider store={store}>
       <ThemeProvider theme={darkTheme}>
         <CssBaseline />
+        <LogStream></LogStream>
         <Box
           className="App"
           sx={{
