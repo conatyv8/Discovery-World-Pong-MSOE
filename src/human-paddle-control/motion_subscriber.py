@@ -4,6 +4,7 @@ import time
 import paho.mqtt.client as mqtt
 import numpy as np
 import json
+import uuid
 
 """
 This class was removed from the driver to follow previous development patterns
@@ -53,8 +54,8 @@ class MotionSubscriber:
     def __init__(self):
         self.level = 0
         self.game_state = 0
-
-        self.client = mqtt.Client(client_id="human-paddle-control")
+        client_id = "human-paddle-control-" + str(uuid.uuid1())
+        self.client = mqtt.Client(client_id=client_id)
         self.client.on_connect = lambda client, userdata, flags, rc : self.on_connect(client, userdata, flags, rc)
         self.client.on_message = lambda client, userdata, msg : self.on_message(client, userdata, msg)
         # self.client.connect_async("localhost", port=1883, keepalive=60)
