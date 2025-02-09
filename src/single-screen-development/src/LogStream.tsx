@@ -5,7 +5,7 @@ function LogStream() {
     const [logs, setLogs] = useState<string[]>([]);
 
     useEffect(() => {
-        const eventSource = new EventSource('http://localhost:3000/logs'); // Use relative path
+        const eventSource = new EventSource('http://localhost:3000/logs');
         
         eventSource.onmessage = (e) => {
             setLogs(prev => [...prev, e.data]);

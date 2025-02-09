@@ -18,7 +18,21 @@ import NNVisualizer from './Models/NNVisualizer'; // Visualizes the neural netwo
 // Import React hooks
 import { Suspense, useEffect } from 'react';
 
+const util = require('util'); 
 const mqtt = require('mqtt')
+const originalLog = console.log;
+
+console.log = function(...args) {
+  // 1. Format message like default console.log
+  const message = util.format(...args);
+  
+  // 2. Publish to MQTT (use a dedicated topic like 'logs/app')
+  client.publish('logs/app', message);
+  
+  // 3. Maintain original functionality
+  originalLog.apply(console, args);
+};
+
 // Connects to the MQTT broker specified in environment variable
 const client = mqtt.connect(process.env.REACT_APP_URL, { clientId: 'clocktower-visualizer' })
 client.on('connect', function () {
