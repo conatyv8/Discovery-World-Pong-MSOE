@@ -179,10 +179,12 @@ services:
         build:
             context: ./src/log-server
         profiles: [dev]
+        environment:
+            - MQTT_BROKER_URL=ws://mqtt-broker:9001
+        depends_on:
+            - mqtt-broker
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-        ports:
-            - "3000:3000"  # Expose port for host access
         networks:
             - pong-network
 networks:

@@ -1,61 +1,116 @@
-const express = require("express");
-const cors = require("cors");
-const Docker = require("dockerode");
-const app = express();
+const Docker = require('dockerode');
+const mqtt = require('mqtt');
+const docker = new Docker();
 
-app.use(cors());
-
-const docker = new Docker({ socketPath: "/var/run/docker.sock" });
-
-app.get("/logs", async (req, res) => {
-  try {
-    const container = docker.getContainer("clocktower-visualizer");
-    const logsStream = await container.logs({
-      follow: true,
-      stdout: true,
-      stderr: true,
-      tail: 0,
-    });
-
-    // res.setHeader("Content-Type", "text/event-stream");
-    // res.setHeader("Cache-Control", "no-cache");
-    // res.setHeader("Connection", "keep-alive");
-    // res.flushHeaders();
-
-    logsStream.on("data", (chunk) => {
-      for (let i = 0; i < chunk.length; ) {
-        const header = chunk.slice(i, i + 8);
-        const type = header.readUInt8(0);
-        const length = header.readUInt32BE(4);
-
-        // Extract the actual log message
-        const message = chunk.slice(i + 8, i + 8 + length).toString("utf8");
-
-        // Send the decoded log message to the client
-        // res.write(`data: ${message}\n\n`);
-
-        // Publish the log message to MQTT
-        mqttClient.publish(
-          "docker/logs/clocktower-visualizer",
-          message,
-          { qos: 1 },
-          (err) => {
-            if (err) {
-              console.error("Failed to publish log to MQTT:", err);
-            }
-          }
-        );
-
-        i += 8 + length; // Move to the next log entry
-      }
-    });
-
-    logsStream.on("end", () => res.end());
-    req.on("close", () => logsStream.destroy());
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
+const mqttClient = mqtt.connect(process.env.MQTT_BROKER_URL, {
+  clientId: 'docker-log-publisher'
 });
 
-const PORT = 3000;
-app.listen(PORT, () => console.log(`Log server running on port ${PORT}`));
+// Track active log streams
+const activeContainers = new Map();
+
+// Connect to MQTT
+mqttClient.on('connect', () => {
+  console.log('Connected to MQTT broker');
+  //startMonitoring();
+});
+
+mqttClient.on('error', (err) => {
+    console.error('❌ MQTT connection error:', err);
+  });
+  
+
+// Monitor Docker containers
+async function startMonitoring() {
+  // Get all running containers
+  const containers = await docker.listContainers();
+  
+  // Start tracking each container
+  containers.forEach(containerInfo => {
+    trackContainerLogs(containerInfo);
+  });
+
+  // Watch for new containers
+  const dockerEvents = docker.getEvents();
+  dockerEvents.on('data', (chunk) => {
+    const event = JSON.parse(chunk.toString());
+    if (event.Type === 'container' && event.Action === 'start') {
+      docker.getContainer(event.id).inspect()
+        .then(containerInfo => trackContainerLogs(containerInfo));
+    }
+  });
+}
+
+// Track logs for a single container
+function trackContainerLogs(containerInfo) {
+  const container = docker.getContainer(containerInfo.Id);
+  const containerName = containerInfo.Names[0].replace(/^\//, ''); // Remove leading slash
+
+  // Skip if already tracking
+  if (activeContainers.has(containerName)) return;
+
+  // Start log stream
+  const logStream = container.logs({
+    follow: true,
+    stdout: true,
+    stderr: true,
+    tail: 0,
+    timestamps: true // Include timestamps
+  });
+
+  // Process log chunks
+  logStream.on('data', (chunk) => {
+    parseDockerLog(chunk).forEach(message => {
+      const payload = JSON.stringify({
+        container: containerName,
+        message: message.content,
+        timestamp: message.timestamp,
+        type: message.type // 'stdout' or 'stderr'
+      });
+
+      mqttClient.publish(
+        `docker/logs/${containerName}`,
+        payload,
+        { qos: 1 }
+      );
+    });
+  });
+
+  // Handle stream end
+  logStream.on('end', () => {
+    activeContainers.delete(containerName);
+  });
+
+  // Store reference
+  activeContainers.set(containerName, logStream);
+}
+
+// Parse Docker's log format (header + message)
+function parseDockerLog(chunk) {
+  const messages = [];
+  for (let i = 0; i < chunk.length; ) {
+    const header = chunk.slice(i, i + 8);
+    const type = header.readUInt8(0); // 1=stdout, 2=stderr
+    const timestamp = new Date(header.readUInt32BE(4) * 1000).toISOString();
+    const length = header.readUInt32BE(4);
+
+    messages.push({
+      type: type === 1 ? 'stdout' : 'stderr',
+      timestamp: timestamp,
+      content: chunk.slice(i + 8, i + 8 + length).toString('utf8')
+    });
+
+    i += 8 + length;
+  }
+  return messages;
+}
+
+// Cleanup on exit
+process.on('SIGINT', () => {
+  activeContainers.forEach((stream, name) => {
+    stream.destroy();
+    console.log(`Stopped tracking ${name}`);
+  });
+  mqttClient.end();
+  process.exit();
+});

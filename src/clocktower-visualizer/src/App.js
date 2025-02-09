@@ -27,7 +27,7 @@ console.log = function(...args) {
   const message = util.format(...args);
   
   // 2. Publish to MQTT (use a dedicated topic like 'logs/app')
-  client.publish('logs/app', message);
+  client.publish('app/logs/clocktower-visualizer', message);
   
   // 3. Maintain original functionality
   originalLog.apply(console, args);
