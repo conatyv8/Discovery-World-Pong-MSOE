@@ -16,9 +16,16 @@ function LogStream() {
     mqttClient.on("connect", () => {
       console.log("Connected to MQTT broker");
       // Subscribe to the logs topic
-      mqttClient.subscribe("logs/app", (err) => {
+      mqttClient.subscribe("docker/logs/log-server", (err) => {
         if (!err) {
-          console.log("Subscribed to logs/app");
+          console.log("Subscribed to docker/logs/log-server");
+        } else {
+          console.error("Failed to subscribe:", err);
+        }
+      });
+      mqttClient.subscribe("app/logs/clocktower-visualizer", (err) => {
+        if (!err) {
+          console.log("Subscribed to app/logs/log-server");
         } else {
           console.error("Failed to subscribe:", err);
         }
@@ -26,7 +33,7 @@ function LogStream() {
     });
 
     mqttClient.on("message", (topic, message) => {
-      if (topic === "logs/app") {
+      if (topic === "docker/logs/log-server" || topic === "app/logs/clocktower-visualizer") {
         // Add the new log message to the state
         setLogs((prevLogs) => [...prevLogs, message.toString()]);
       }

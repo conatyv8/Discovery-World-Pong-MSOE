@@ -1,10 +1,21 @@
 const Docker = require('dockerode');
 const mqtt = require('mqtt');
+const util = require('util'); 
 const docker = new Docker();
+
+
+
+//const originalLog = console.log;
 
 const mqttClient = mqtt.connect(process.env.MQTT_BROKER_URL, {
   clientId: 'docker-log-publisher'
 });
+
+// console.log = function(...args) {
+//   const message = util.format(...args);
+//   mqttClient.publish('app/logs/log-server', message);
+//   originalLog.apply(console, args);
+// };
 
 // Track active log streams
 const activeContainers = new Map();
@@ -12,11 +23,11 @@ const activeContainers = new Map();
 // Connect to MQTT
 mqttClient.on('connect', () => {
   console.log('Connected to MQTT broker');
-  //startMonitoring();
+  startMonitoring();
 });
 
 mqttClient.on('error', (err) => {
-    console.error('❌ MQTT connection error:', err);
+    console.error('MQTT connection error:', err);
   });
   
 
@@ -26,12 +37,12 @@ async function startMonitoring() {
   const containers = await docker.listContainers();
   
   // Start tracking each container
-  containers.forEach(containerInfo => {
-    trackContainerLogs(containerInfo);
-  });
+  for (const containerInfo of containers) {
+    await trackContainerLogs(containerInfo);
+  }
 
   // Watch for new containers
-  const dockerEvents = docker.getEvents();
+  const dockerEvents = await docker.getEvents();
   dockerEvents.on('data', (chunk) => {
     const event = JSON.parse(chunk.toString());
     if (event.Type === 'container' && event.Action === 'start') {
@@ -42,31 +53,32 @@ async function startMonitoring() {
 }
 
 // Track logs for a single container
-function trackContainerLogs(containerInfo) {
-  const container = docker.getContainer(containerInfo.Id);
-  const containerName = containerInfo.Names[0].replace(/^\//, ''); // Remove leading slash
+async function trackContainerLogs(containerInfo) {
+  let containerName = "";
+  if(!containerInfo.Names && containerInfo.Name){
+    containerName = containerInfo.Name.replace(/^\//, '');
+  }else{
+    containerName = containerInfo.Names[0].replace(/^\//, '');
+  }
+  const container = docker.getContainer(containerName);
 
   // Skip if already tracking
   if (activeContainers.has(containerName)) return;
 
+  console.log('Tracking curr container: ' + containerName);
+
   // Start log stream
-  const logStream = container.logs({
+  const logStream = await container.logs({
     follow: true,
     stdout: true,
     stderr: true,
     tail: 0,
-    timestamps: true // Include timestamps
   });
 
   // Process log chunks
   logStream.on('data', (chunk) => {
     parseDockerLog(chunk).forEach(message => {
-      const payload = JSON.stringify({
-        container: containerName,
-        message: message.content,
-        timestamp: message.timestamp,
-        type: message.type // 'stdout' or 'stderr'
-      });
+      const payload = message.content;
 
       mqttClient.publish(
         `docker/logs/${containerName}`,
@@ -90,7 +102,7 @@ function parseDockerLog(chunk) {
   const messages = [];
   for (let i = 0; i < chunk.length; ) {
     const header = chunk.slice(i, i + 8);
-    const type = header.readUInt8(0); // 1=stdout, 2=stderr
+    const type = header.readUInt8(0);
     const timestamp = new Date(header.readUInt32BE(4) * 1000).toISOString();
     const length = header.readUInt32BE(4);
 

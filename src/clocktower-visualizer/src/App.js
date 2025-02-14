@@ -91,6 +91,7 @@ function Rig({ v = new THREE.Vector3() }) {
       }
 
     })
+
   }, [])
 
   // Animates camera movement smoothly using lerp (linear interpolation)
