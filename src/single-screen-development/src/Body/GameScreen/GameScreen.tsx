@@ -30,7 +30,7 @@ const GameScreen: FC<GameScreenProps> = ({
         {/*    </div>*/}
         {/*</div>*/}
 
-                    <iframe className = "content" src={connectionString} width="1280 px" height="720 px">
+                    <iframe  className = "content" src={connectionString} width="1280 px" height="720 px">
                     </iframe>
 
     </>
