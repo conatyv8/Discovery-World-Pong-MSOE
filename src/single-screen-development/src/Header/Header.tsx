@@ -26,7 +26,8 @@ const Header: FC = () => {
       }}
     >
         <Box sx={{
-          display: "flex"
+          display: "flex",
+          alignItems: 'center'
         }}>
           <IconButton onClick={handleSidebarButtonClick}>
             <ViewSidebarRoundedIcon ></ViewSidebarRoundedIcon>
