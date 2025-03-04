@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import Body from "./Body/Body";
 import Header from "./Header/Header";
@@ -22,7 +22,16 @@ const Main: FC = () => {
   const dispatch = useAppDispatch();
   const [sideBarWidth, setSideBarWidth] = useState("35%");
   const [logs, setLogs] = useState<Log[]>([]);
+  const isSideBarOpenRef = useRef(isSideBarOpen);
+  const filterStateRef = useRef(filterState);
 
+  useEffect(() => {
+    isSideBarOpenRef.current = isSideBarOpen;
+  }, [isSideBarOpen]);
+
+  useEffect(() => {
+    filterStateRef.current = filterState;
+  }, [filterState]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -41,7 +50,6 @@ const Main: FC = () => {
       clientId: "mqtt-logger-ui",
     });
 
-    
     const originalLog = console.log;
 
     console.log = function(...args) {
@@ -77,27 +85,24 @@ const Main: FC = () => {
         type = "console";
       }
       if(containerLogCounts[containerName] !== undefined){
-
-        console.log("IS IT OPEN: " + isSideBarOpen)
-        if(isSideBarOpen === false){
+        console.log("IS IT OPEN: " + isSideBarOpenRef.current)
+        if(isSideBarOpenRef.current === false){
           console.log('here :' + type! + " " + containerName)
           dispatch(incrementContainerLogCount(containerName));
         }else{
           console.log('here2 :' + type! + " " + containerName)
-          if(!filterState.logType[type!] || !filterState.containers[containerName]){
+          if(!filterStateRef.current.logType[type!] || !filterStateRef.current.containers[containerName]){
             dispatch(incrementContainerLogCount(containerName));
           }
         }
       }
       setLogs(prev => [...prev, {type: type, message: message.toString(),containerName: containerName! }])
-
     });
 
     mqttClient.on("error", (err) => {
       console.error("MQTT error:", err);
     });
 
-    // Cleanup on component unmount
     return () => {
       if (mqttClient) {
         mqttClient.end(); // Disconnect the client
