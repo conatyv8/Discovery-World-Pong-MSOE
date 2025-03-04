@@ -3,10 +3,17 @@ import { FC, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import Body from "./Body/Body";
 import Header from "./Header/Header";
-import { LogContainerKeys, selectLogFiltersState, selectSideBarState } from "./redux/containerInfoSlice";
+import {
+  LogContainerKeys,
+  selectLogFiltersState,
+  selectSideBarState,
+} from "./redux/containerInfoSlice";
 import SideBarContainer from "./Sidebar/SidebarContainer";
 import mqtt, { MqttClient } from "mqtt";
-import { incrementContainerLogCount, selectContainerLogCount } from "./redux/exhibitScreensSlice";
+import {
+  incrementContainerLogCount,
+  selectContainerLogCount,
+} from "./redux/exhibitScreensSlice";
 import { format } from "util";
 
 export type Log = {
@@ -18,26 +25,19 @@ export type Log = {
 const Main: FC = () => {
   const isSideBarOpen = useAppSelector(selectSideBarState);
   const containerLogCounts = useAppSelector(selectContainerLogCount);
-  const filterState = useAppSelector(selectLogFiltersState)
+  const filterState = useAppSelector(selectLogFiltersState);
   const dispatch = useAppDispatch();
   const [sideBarWidth, setSideBarWidth] = useState("35%");
   const [logs, setLogs] = useState<Log[]>([]);
-  const isSideBarOpenRef = useRef(isSideBarOpen);
-  const filterStateRef = useRef(filterState);
-
-  useEffect(() => {
-    isSideBarOpenRef.current = isSideBarOpen;
-  }, [isSideBarOpen]);
-
-  useEffect(() => {
-    filterStateRef.current = filterState;
-  }, [filterState]);
+  const mqttClientRef = useRef<MqttClient | null>(null);
+  const sideBarRef = useRef(isSideBarOpen);
+  const filterStateRef = useRef(filterState)
 
   useEffect(() => {
     const handleResize = () => {
-      if(window.innerWidth * 0.35 < 750){
+      if (window.innerWidth * 0.35 < 750) {
         setSideBarWidth("35%");
-      }else{
+      } else {
         setSideBarWidth("750px");
       }
     };
@@ -46,73 +46,100 @@ const Main: FC = () => {
   }, []);
 
   useEffect(() => {
-    const mqttClient = mqtt.connect("ws://localhost:9001", {
-      clientId: "mqtt-logger-ui",
-    });
+    sideBarRef.current = isSideBarOpen
+  }, [isSideBarOpen])
 
-    const originalLog = console.log;
+  useEffect(() => {
+    filterStateRef.current = filterState
+  }, [filterState])
 
-    console.log = function(...args) {
-      const message = format(...args);
-      mqttClient.publish('app/logs/single-screen-development', message);
-      originalLog.apply(console, args);
-    };
-
-    mqttClient.on("connect", () => {
-      console.log("Connected to MQTT broker");
-      mqttClient.subscribe("docker/logs/#", (err) => {
-        if (!err) {
-          console.log("Subscribed to docker/logs/");
-        } else {
-          console.error("Failed to subscribe:", err);
-        }
+  useEffect(() => {
+    if (!mqttClientRef.current) {
+      const mqttClient = mqtt.connect("ws://localhost:9001", {
+        clientId: "single-screen-dev",
+        reconnectPeriod: 0,
       });
-      mqttClient.subscribe("app/logs/#", (err) => {
-        if (!err) {
-          console.log("Subscribed to app/logs/");
-        } else {
-          console.error("Failed to subscribe:", err);
-        }
-      });
-    });
+      mqttClientRef.current = mqttClient;
 
-    mqttClient.on("message", (topic, message) => {
-      const containerName = topic.split("/").pop() as LogContainerKeys;
-      let type : "docker" | "console";
-      if (topic.includes("docker/logs/")) {
-        type = "docker"
-      } else if (topic.includes("app/logs/")) {
-        type = "console";
-      }
-      if(containerLogCounts[containerName] !== undefined){
-        console.log("IS IT OPEN: " + isSideBarOpenRef.current)
-        if(isSideBarOpenRef.current === false){
-          console.log('here :' + type! + " " + containerName)
-          dispatch(incrementContainerLogCount(containerName));
-        }else{
-          console.log('here2 :' + type! + " " + containerName)
-          if(!filterStateRef.current.logType[type!] || !filterStateRef.current.containers[containerName]){
-            dispatch(incrementContainerLogCount(containerName));
+      mqttClient.on("connect", () => {
+        console.log("Connected to MQTT broker");
+        mqttClient.subscribe("docker/logs/#", (err) => {
+          if (!err) {
+            console.log("Subscribed to docker/logs/");
+          } else {
+            console.error("Failed to subscribe:", err);
           }
-        }
-      }
-      setLogs(prev => [...prev, {type: type, message: message.toString(),containerName: containerName! }])
-    });
+        });
+        mqttClient.subscribe("app/logs/#", (err) => {
+          if (!err) {
+            console.log("Subscribed to app/logs/");
+          } else {
+            console.error("Failed to subscribe:", err);
+          }
+        });
+      });
 
-    mqttClient.on("error", (err) => {
-      console.error("MQTT error:", err);
-    });
+      const originalLog = console.log;
+
+      console.log = function (...args) {
+        const message = format(...args);
+        mqttClient.publish("app/logs/single-screen-development", message);
+        originalLog.apply(console, args);
+      };
+
+      mqttClient.on("message", (topic, message) => {
+        try {
+          const containerName = topic.split("/").pop() as LogContainerKeys;
+          let type: "docker" | "console";
+          if (topic.includes("docker/logs/")) {
+            type = "docker";
+          } else if (topic.includes("app/logs/")) {
+            type = "console";
+          }
+          if (containerLogCounts[containerName] !== undefined) {
+            if (sideBarRef.current === false) {
+              dispatch(incrementContainerLogCount(containerName));
+            } else {
+              if (
+                !filterStateRef.current.logType[type!] ||
+                !filterStateRef.current.containers[containerName]
+              ) {
+                dispatch(incrementContainerLogCount(containerName));
+              }
+            }
+          }
+          setLogs((prev) => [
+            ...prev,
+            {
+              type: type,
+              message: message.toString(),
+              containerName: containerName!,
+            },
+          ]);
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      mqttClient.on("error", (err) => {
+        console.error("MQTT error:", err);
+      });
+    }
 
     return () => {
-      if (mqttClient) {
-        mqttClient.end(); // Disconnect the client
+      if (mqttClientRef.current) {
+        mqttClientRef.current.end();
+        mqttClientRef.current = null; // Reset for next mount
       }
     };
   }, []);
 
   return (
     <>
-      <SideBarContainer sideBarWidth={sideBarWidth} logs={logs}></SideBarContainer>
+      <SideBarContainer
+        sideBarWidth={sideBarWidth}
+        logs={logs}
+      ></SideBarContainer>
       <Box
         className="App"
         sx={{
@@ -125,7 +152,7 @@ const Main: FC = () => {
           alignItems: "center",
           padding: `${isSideBarOpen ? `0px 25px` : "0px 90px"}`,
           marginLeft: `${isSideBarOpen ? `${sideBarWidth}` : "0px"}`,
-          transition: 'all 0.3s ease'
+          transition: "all 0.3s ease",
         }}
       >
         <Header></Header>
