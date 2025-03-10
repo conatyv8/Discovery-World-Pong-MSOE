@@ -21,7 +21,8 @@ import { Suspense, useEffect } from 'react';
 // Import UUID to generate unique but identifiable MQTT client id
 import { v1 as uuidv1 } from 'uuid';
 
-const mqtt = require('mqtt')
+const mqtt = require('mqtt');
+const util = require('util');
 const originalLog = console.log;
 
 console.log = function(...args) {
