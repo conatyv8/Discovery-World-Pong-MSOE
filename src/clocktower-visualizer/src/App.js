@@ -21,7 +21,21 @@ import { Suspense, useEffect } from 'react';
 // Import UUID to generate unique but identifiable MQTT client id
 import { v1 as uuidv1 } from 'uuid';
 
-const mqtt = require('mqtt')
+const mqtt = require('mqtt');
+const util = require('util');
+const originalLog = console.log;
+
+console.log = function(...args) {
+  // 1. Format message like default console.log
+  const message = util.format(...args);
+  
+  // 2. Publish to MQTT (use a dedicated topic like 'logs/app')
+  client.publish('app/logs/clocktower-visualizer', message);
+  
+  // 3. Maintain original functionality
+  originalLog.apply(console, args);
+};
+
 // Connects to the MQTT broker specified in environment variable
 const cid = 'clocktower-visualizer-' + uuidv1()
 const client = mqtt.connect(process.env.REACT_APP_URL, { clientId: cid })
@@ -81,6 +95,7 @@ function Rig({ v = new THREE.Vector3() }) {
       }
 
     })
+
   }, [])
 
   // Animates camera movement smoothly using lerp (linear interpolation)
