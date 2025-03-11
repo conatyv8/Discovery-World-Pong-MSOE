@@ -155,8 +155,8 @@ services:
             additional_contexts:
                 certs: ./certs
         profiles: [dev, prod]
-        devices:
-            - "/dev/snd"
+        # devices:
+        #     - "/dev/snd"
         restart: unless-stopped
         networks:
             - pong-network
@@ -171,6 +171,20 @@ services:
         ports:
             - 5005:80
         restart: unless-stopped
+        networks:
+            - pong-network
+    log-server:
+        container_name: log-server
+        image: log-server:latest
+        build:
+            context: ./src/log-server
+        profiles: [dev]
+        environment:
+            - MQTT_BROKER_URL=ws://mqtt-broker:9001
+        depends_on:
+            - mqtt-broker
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
         networks:
             - pong-network
 networks:
