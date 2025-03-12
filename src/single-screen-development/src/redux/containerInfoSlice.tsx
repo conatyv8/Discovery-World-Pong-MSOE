@@ -83,7 +83,7 @@ export const containerInfoSlice = createSlice({
         state.filters.containers[k as LogContainerKeys] = false;
       })
     },
-    resetFilters: (state, action) => {
+    resetFilters: (state) => {
       state.filters = initialState.filters;
     },
   },

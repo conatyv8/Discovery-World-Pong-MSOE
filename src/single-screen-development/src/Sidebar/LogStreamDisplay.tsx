@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef } from "react";
 import { useAppSelector } from "../app/hooks";
 import useScreenSize from "../app/hooks/useScreenSize";
 import { LogContainerColors, selectLogFiltersState } from "../redux/containerInfoSlice";

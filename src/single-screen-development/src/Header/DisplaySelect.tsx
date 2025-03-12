@@ -2,7 +2,6 @@ import { FormControl, MenuItem, Select, styled } from "@mui/material";
 import { FC, useRef } from "react";
 import { useAppDispatch } from "../app/hooks";
 import { DisplayTabs, setDisplayTab } from "../redux/exhibitScreensSlice";
-import useScreenSize from "../app/hooks/useScreenSize";
 
 const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
   color: "#E9E9E9",
@@ -43,7 +42,6 @@ interface DisplaySelectProps {
 const DisplaySelect: FC<DisplaySelectProps> = ({ tabState }) => {
   const dispatch = useAppDispatch();
   const selectRef = useRef<HTMLDivElement | null>(null);
-  const { isLg } = useScreenSize();
   const handleChange = (tab: DisplayTabs) => {
     dispatch(setDisplayTab({ tab: tab }));
   };
