@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { LogContainerKeys, setAllContainerLogFiltersOff, setContainerLogFilter, setSidebarOpen } from "../../../redux/containerInfoSlice";
-import { resetLogCounts, setContainerLogCount } from "../../../redux/exhibitScreensSlice";
+import { resetLogCounts } from "../../../redux/exhibitScreensSlice";
 
 interface ExhibitScreenProps {
   open: boolean;

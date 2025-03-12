@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 interface GameScreenProps {
     connectionString: string;
     height: number;
