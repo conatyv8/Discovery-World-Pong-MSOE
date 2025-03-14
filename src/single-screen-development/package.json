@@ -15,6 +15,9 @@
     "typescript": "^5.8.2",
     "util": "^0.12.5"
   },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.6.1"
+  },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
     "@types/mqtt": "^0.0.34",
