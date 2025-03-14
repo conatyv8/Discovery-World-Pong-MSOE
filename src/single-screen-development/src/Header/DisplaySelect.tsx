@@ -9,7 +9,7 @@ const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
   borderRadius: "4px",
   height: "40px",
   width: "160px",
-  fontSize: '14px',
+  fontSize: "14px",
   transition:
     "background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease",
   boxShadow: theme.shadows[1],
@@ -38,7 +38,11 @@ const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
 interface DisplaySelectProps {
   tabState: DisplayTabs;
 }
-
+/**
+ * The DisplaySelect Component:
+ *  Allows users to choose a game tab
+ *  Handles pushing tab selection to redux
+ */
 const DisplaySelect: FC<DisplaySelectProps> = ({ tabState }) => {
   const dispatch = useAppDispatch();
   const selectRef = useRef<HTMLDivElement | null>(null);
@@ -80,7 +84,7 @@ const DisplaySelect: FC<DisplaySelectProps> = ({ tabState }) => {
           color: "#E9E9E9",
           fontWeight: "700",
           width: "160px",
-          fontSize: '14px',
+          fontSize: "14px",
           "&:hover, &.Mui-focused": {
             backgroundColor: "rgba(255,255,255,0.12)",
             boxShadow: "0px 3px 3px rgba(0, 0, 0, 0.2)",
@@ -100,7 +104,7 @@ const DisplaySelect: FC<DisplaySelectProps> = ({ tabState }) => {
         </StyledMenuItem>
         <StyledMenuItem
           sx={{
-            display: `${tabState === "game" ? "none" : ""}`
+            display: `${tabState === "game" ? "none" : ""}`,
           }}
           value={"game"}
         >
