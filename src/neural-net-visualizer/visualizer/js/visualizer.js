@@ -1,3 +1,9 @@
+
+console.log = function(...args) {
+  const message = util.format(...args);
+  mqttClient.publish('app/logs/neural-net-visualizer', message);
+  originalLog.apply(console, args);
+};
 // called when the client connects
 function onConnect() {
     // Once a connection has been made, make a subscription and send a message.
