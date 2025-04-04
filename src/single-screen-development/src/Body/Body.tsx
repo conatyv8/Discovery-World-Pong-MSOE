@@ -87,7 +87,6 @@ function Body() {
       let newWidth = containerWidth / (verticalScreensCount + 0.2);
       //determine the max height based on the calculated width and fixed aspect ratio
       let newHeight = newWidth / aspectRatio;
-
       /*
         If the height is too large for the screen
         Multiply the height by 95%
@@ -116,7 +115,7 @@ function Body() {
         height: Math.round(newHeight),
       });
     }
-  }, [containerSize, verticalScreensCount]);
+  }, [containerSize, verticalScreensCount, screenTabState]);
 
   return (
     <Box

@@ -30,8 +30,6 @@ const GameScreen: FC<GameScreenProps> = ({
           position: "absolute",
           top: 0,
           left: 0,
-          width: "100%",
-          height: "100%",
           transform: `scale(${width / 1920})`,
           transformOrigin: "top left",
           transition: "all 0.2s ease",
