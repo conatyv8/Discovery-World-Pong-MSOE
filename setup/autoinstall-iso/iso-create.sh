@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -x
+set -x -e
 
 #################################################################
 # This file creates a custom ISO for the AI Pong Exhibit based
@@ -19,7 +19,7 @@ ISO_DIRECTORY='iso-test'
 # wget - to download fresh build of Ubuntu Server ISO from online
 # xorriso - for building the modified ISO
 sudo apt update
-sudo apt install p7zip wget xorriso
+sudo apt install p7zip-full wget xorriso --install-suggests
 
 # Set up build environment
 cd ../..
