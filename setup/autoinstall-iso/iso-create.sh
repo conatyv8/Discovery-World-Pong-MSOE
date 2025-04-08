@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -x
+set -x -e
 
 #################################################################
 # This file creates a custom ISO for the AI Pong Exhibit based
