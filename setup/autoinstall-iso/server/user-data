@@ -79,8 +79,8 @@ autoinstall:
 
     # This version runs the post install script found in the main branch of the aipong repo
     # Ensure the script has execution permissions
-    #- chmod +x /target/home/dwpong/Discovery-World-Pong-MSOE/setup/post-install.sh
-    #- echo "/home/dwpong/Discovery-World-Pong-MSOE/setup/post-install.sh; sudo rm -f /etc/profile.d/post-install.sh; sudo reboot" > /target/etc/profile.d/post-install.sh
+    #- chmod +x /target/home/dwpong/Discovery-World-Pong/setup/post-install.sh
+    #- echo "/home/dwpong/Discovery-World-Pong/setup/post-install.sh; sudo rm -f /etc/profile.d/post-install.sh; sudo reboot" > /target/etc/profile.d/post-install.sh
     #- chmod +x /target/etc/profile.d/post-install.sh
 
     # This version runs the dev post install script used for development found in the same repo
