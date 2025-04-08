@@ -70,7 +70,9 @@ autoinstall:
     # Clone the Git repository
     - echo "Cloning Git repository..."
     - mkdir -p /target/home/dwpong
-    - git clone https://github.com/conatyv8/Discovery-World-Pong-MSOE.git /target/home/dwpong/Discovery-World-Pong-MSOE > /target/var/log/git-clone.log 2>&1
+    - git clone https://github.com/aaron97neu/Discovery-World-Pong.git /target/home/dwpong/Discovery-World-Pong-MSOE > /target/var/log/git-clone.log 2>&1
+    
+ Will change again soon as we move back into RA repos but still
 
     # Create a script to run on first login (ONLY UNCOMMENT ONE OPTION)
     # ** Look at overview.md for more information **
