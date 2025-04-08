@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -x
+set -x -e
 
 #############################################################################
 # This file updates a pre-existing custom ISO for the AI Pong
