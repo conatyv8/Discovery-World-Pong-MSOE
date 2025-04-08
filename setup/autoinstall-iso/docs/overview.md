@@ -56,8 +56,9 @@ newer version even when using Jammy instead of Noble. The line I am referring to
 
 For the system as a whole:
 
-1. The system by fault runs off of Ubuntu Server 24.04.2. The system itself has not been fully tested for backwards
-compatability which earlier versions of Ubuntu Server. This will have to be tested.
+1. The system by default runs off of Ubuntu Server 24.04.2. The system itself has not been fully tested for backwards
+compatibility with earlier versions of Ubuntu Server. This will have to be tested.
+
 
 2. When making changes in a ISO directory, keep in mind that **these changes will only be applied to that specific iso directory**.
 If you decide to create a new iso and you want those changes you applied you will need to update the files in
