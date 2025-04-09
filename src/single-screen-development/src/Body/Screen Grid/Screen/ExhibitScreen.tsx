@@ -9,14 +9,13 @@ import {
 } from "../../../redux/containerInfoSlice";
 import { resetLogCounts } from "../../../redux/exhibitScreensSlice";
 
-
-
 interface ExhibitScreenProps {
   open: boolean;
   connectionString: string;
   width: number;
   height: number;
   container: LogContainerKeys;
+  vert: number;
 }
 
 interface BadgeProps {
@@ -64,7 +63,6 @@ const Badge: React.FC<BadgeProps> = ({ onClick, badgeContent }) => {
   );
 };
 
-
 /**
  * The ExhibitScreen Component:
  *  Houses one vertical game screen and notification badge
@@ -74,9 +72,12 @@ const ExhibitScreen: FC<ExhibitScreenProps> = ({
   connectionString,
   width,
   height,
-  container
+  container,
+  vert,
 }) => {
   const [iframeSrc, setIframeSrc] = useState("");
+  const [prevVert, setPrevVert] = useState(3);
+  const [animate, setAnimate] = useState(false);
   const logCountState = useAppSelector(
     (state) => state.exhibitScreens.newContainerLogCounts[container]
   );
@@ -88,6 +89,17 @@ const ExhibitScreen: FC<ExhibitScreenProps> = ({
     setIframeSrc(`${connectionString}?t=${Date.now()}`);
   }, [connectionString]);
 
+  useEffect(() => {
+    setPrevVert((prevState) => {
+      if(prevState !== vert || prevVert !== vert){
+        setAnimate(true);
+      }else{
+        setAnimate(false);
+      }
+      return vert;
+    });
+  }, [vert, sidebarOpen])
+
   return (
     <Box
       sx={{
@@ -97,8 +109,8 @@ const ExhibitScreen: FC<ExhibitScreenProps> = ({
         opacity: open ? 1 : 0,
         width: open ? `${width}px` : 0,
         height: `${height}px`,
-        transform: open ? "scale(1)" : "scale(0)",
-        transition: `transform .2s ease, width .2s ease`
+        transform: open ? `scale(1)` : "scale(0)",
+        transition: `${animate ? 'all .2s ease' : 'transform .2s ease'}`,
       }}
     >
       <Badge
@@ -121,24 +133,20 @@ const ExhibitScreen: FC<ExhibitScreenProps> = ({
           }
         }}
       ></Badge>
-        <Box
-          sx={{
-            position: "absolute",
-            top: '50%', // Or '50%' if you want vertical centering
-            left: "50%", // Centers horizontally
-            transform: `translateX(-50%) translateY(-50%) scale(${width / 1080})`, // Adjusts for centering
-            transformOrigin: "center", // Scales from the center
-          }}
-        >
-        <iframe
-          src={iframeSrc}
-          style={{
-            width: "1080px",
-            height: "1920px",
-            border: "none",
-          }}
-        ></iframe>
-      </Box>
+      <iframe
+        src={iframeSrc}
+        style={{
+          border: "none",
+          position: "absolute",
+          top: '0',
+          left: '0', 
+          transformOrigin: 'top left',
+          height: '1920px',
+          width: '1080px',
+
+          transform: `scale(${width / 1080})`
+        }}
+      ></iframe>
     </Box>
   );
 };
