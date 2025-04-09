@@ -83,8 +83,8 @@ function Body() {
     const containerHeight = containerSize.height;
     //check which tab we are in
     if (screenTabState === "vertical") {
-      //determine the max width each container can be (the plus .20 just gives room for error)
-      let newWidth = containerWidth / (verticalScreensCount + 0.2);
+      //determine the max width each container can be (the plus .30 just gives room for error)
+      let newWidth = containerWidth / (verticalScreensCount + .30);
       //determine the max height based on the calculated width and fixed aspect ratio
       let newHeight = newWidth / aspectRatio;
       /*
@@ -121,7 +121,6 @@ function Body() {
     <Box
       ref={containerRef}
       sx={{
-        transition: "all 0.3s ease",
         width: "100%",
         height: "100%",
       }}
@@ -137,8 +136,7 @@ function Body() {
             justifyContent: `${
               verticalScreensCount < 3 ? "center" : "space-between"
             }`,
-            gap: `${verticalScreensCount === 1 ? "0" : "12px"}`,
-            transition: "all 0.3s ease",
+            gap: `${verticalScreensCount === 1 ? "0" : "15px"}`,
           }}
         >
           <ExhibitScreen

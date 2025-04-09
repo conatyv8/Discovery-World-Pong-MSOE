@@ -9,6 +9,8 @@ import {
 } from "../../../redux/containerInfoSlice";
 import { resetLogCounts } from "../../../redux/exhibitScreensSlice";
 
+
+
 interface ExhibitScreenProps {
   open: boolean;
   connectionString: string;
@@ -62,6 +64,7 @@ const Badge: React.FC<BadgeProps> = ({ onClick, badgeContent }) => {
   );
 };
 
+
 /**
  * The ExhibitScreen Component:
  *  Houses one vertical game screen and notification badge
@@ -71,7 +74,7 @@ const ExhibitScreen: FC<ExhibitScreenProps> = ({
   connectionString,
   width,
   height,
-  container,
+  container
 }) => {
   const [iframeSrc, setIframeSrc] = useState("");
   const logCountState = useAppSelector(
@@ -84,6 +87,7 @@ const ExhibitScreen: FC<ExhibitScreenProps> = ({
   useEffect(() => {
     setIframeSrc(`${connectionString}?t=${Date.now()}`);
   }, [connectionString]);
+
   return (
     <Box
       sx={{
@@ -94,7 +98,7 @@ const ExhibitScreen: FC<ExhibitScreenProps> = ({
         width: open ? `${width}px` : 0,
         height: `${height}px`,
         transform: open ? "scale(1)" : "scale(0)",
-        transition: "all 0.2s ease",
+        transition: `transform .2s ease, width .2s ease`
       }}
     >
       <Badge
@@ -117,18 +121,15 @@ const ExhibitScreen: FC<ExhibitScreenProps> = ({
           }
         }}
       ></Badge>
-      <Box
-        sx={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          transform: `scale(${width / 1080})`,
-          transformOrigin: "top left",
-          transition: "all 0.2s ease",
-        }}
-      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: '50%', // Or '50%' if you want vertical centering
+            left: "50%", // Centers horizontally
+            transform: `translateX(-50%) translateY(-50%) scale(${width / 1080})`, // Adjusts for centering
+            transformOrigin: "center", // Scales from the center
+          }}
+        >
         <iframe
           src={iframeSrc}
           style={{
