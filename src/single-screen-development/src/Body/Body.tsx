@@ -146,7 +146,7 @@ function Body() {
             open={screenState.networkVisualizer}
             connectionString="http://localhost:5002"
             container={"neural-net-visualizer"}
-            vert={verticalScreensCount}
+            vertScreenCount={verticalScreensCount}
           />
           <ExhibitScreen
             width={divSize.width}
@@ -154,7 +154,7 @@ function Body() {
             open={screenState.clockVisualizer}
             connectionString="http://localhost:5003"
             container={"clocktower-visualizer"}
-            vert={verticalScreensCount}
+            vertScreenCount={verticalScreensCount}
           />
           <ExhibitScreen
             width={divSize.width}
@@ -162,7 +162,7 @@ function Body() {
             open={screenState.humanVisualizer}
             connectionString="http://localhost:5001"
             container={"human-visualizer"}
-            vert={verticalScreensCount}
+            vertScreenCount={verticalScreensCount}
           />
         </Box>
       ) : (

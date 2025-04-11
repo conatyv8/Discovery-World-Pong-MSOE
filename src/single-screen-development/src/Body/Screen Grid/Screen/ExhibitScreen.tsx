@@ -15,7 +15,7 @@ interface ExhibitScreenProps {
   width: number;
   height: number;
   container: LogContainerKeys;
-  vert: number;
+  vertScreenCount: number;
 }
 
 interface BadgeProps {
@@ -73,11 +73,11 @@ const ExhibitScreen: FC<ExhibitScreenProps> = ({
   width,
   height,
   container,
-  vert,
+  vertScreenCount
 }) => {
   const [iframeSrc, setIframeSrc] = useState("");
   const [prevVert, setPrevVert] = useState(3);
-  const [animate, setAnimate] = useState(false);
+  const [animateDimensionChanges, setAnimateDimensionChanges] = useState(false);
   const logCountState = useAppSelector(
     (state) => state.exhibitScreens.newContainerLogCounts[container]
   );
@@ -91,14 +91,14 @@ const ExhibitScreen: FC<ExhibitScreenProps> = ({
 
   useEffect(() => {
     setPrevVert((prevState) => {
-      if(prevState !== vert || prevVert !== vert){
-        setAnimate(true);
+      if(prevState !== vertScreenCount || prevVert !== vertScreenCount){
+        setAnimateDimensionChanges(true);
       }else{
-        setAnimate(false);
+        setAnimateDimensionChanges(false);
       }
-      return vert;
+      return vertScreenCount;
     });
-  }, [vert, sidebarOpen])
+  }, [vertScreenCount, sidebarOpen])
 
   return (
     <Box
@@ -110,7 +110,7 @@ const ExhibitScreen: FC<ExhibitScreenProps> = ({
         width: open ? `${width}px` : 0,
         height: `${height}px`,
         transform: open ? `scale(1)` : "scale(0)",
-        transition: `${animate ? 'all .2s ease' : 'transform .2s ease'}`,
+        transition: `${animateDimensionChanges ? 'all .2s ease' : 'transform .2s ease'}`,
       }}
     >
       <Badge
@@ -143,7 +143,6 @@ const ExhibitScreen: FC<ExhibitScreenProps> = ({
           transformOrigin: 'top left',
           height: '1920px',
           width: '1080px',
-
           transform: `scale(${width / 1080})`
         }}
       ></iframe>
