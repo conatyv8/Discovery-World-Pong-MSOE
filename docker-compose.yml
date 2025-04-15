@@ -187,6 +187,17 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
         networks:
             - pong-network
+    visual-effects:
+        container_name: visual-effects
+        image: visual-effects:latest
+        build:
+            context: ./src/visual-effects
+        profiles: [dev, prod]
+        ports:
+            - 5006:8000
+        restart: unless-stopped
+        networks:
+            - pong-network
 networks:
     pong-network:
         name: pong-network

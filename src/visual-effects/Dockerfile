@@ -15,12 +15,11 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /app
 
-COPY --from=util . ./shared
-
 COPY requirements.txt .
 
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
+RUN pip install paho-mqtt
 
 RUN python -m pip install --upgrade pip && python -m pip install --no-compile --no-cache-dir -r requirements.txt 
 
@@ -38,4 +37,4 @@ COPY . .
 
 ENV PATH="/opt/venv/bin:$PATH"
 
-CMD ["python", "connection.py"]
+CMD ["python", "connect.py"]

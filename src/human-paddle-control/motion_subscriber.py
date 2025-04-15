@@ -37,7 +37,6 @@ class MotionSubscriber:
             # self.puck_x = payload["x"]
             # self.puck_y = payload["y"]
             # We'll use this update to grab a player position value and then publish
-
         
     def publish(self, topic, message, qos=0):
         """
