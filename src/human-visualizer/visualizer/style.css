@@ -23,16 +23,14 @@
    margin: 0px;
  }
  
- canvas {
-    position:relative;
- }
- 
  #depth {
     width: 100%;
-    position:absolute;
  }
  #wrapper {
-    position:relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
  }
 
  #msg {
@@ -46,8 +44,8 @@
 
 .container {
    overflow: hidden;
-   height: 100vh;
-   width: 100vw;
+   height: calc(100vh - 40px);
+   width: calc(100vw - 40px);
    padding: 20px;
    background-image: url(./assets/background.png);
    display: flex;
@@ -78,8 +76,8 @@
  }
 
  .instructions{
-   width: 480px;
-   height: 255px;
+   width: 624px;
+   height: 331px;
    padding: 0px;
    margin: 0px;
  } 
@@ -114,6 +112,8 @@
 /*Dimensions for 4k resolution*/
 @media (min-height: 3800px) and (min-width: 2100px) {
    .container {
+      height: calc(100vh - 80px);
+      width: calc(100vw - 80px);
       padding: 40px;
       gap: 80px;
     } 
@@ -132,8 +132,8 @@
     }
    
     .instructions{
-      width: 960px;
-      height: 510px;
+      width: 1248px;
+      height: 663px;
     } 
    
    .info-container {
