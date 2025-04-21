@@ -62,6 +62,7 @@ canvas {
 
 .visualization {
   flex: 1;
+  width: 100%;
   /* Make the canvas div fill the remaining space */
   overflow: auto;
   /* If necessary, add scrollbars when the content overflows */
