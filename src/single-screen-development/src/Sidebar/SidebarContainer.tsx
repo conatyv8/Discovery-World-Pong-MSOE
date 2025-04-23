@@ -1,10 +1,5 @@
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
-import {
-  Box,
-  Drawer,
-  IconButton,
-  Typography
-} from "@mui/material";
+import { Box, Drawer, IconButton, Typography } from "@mui/material";
 import { FC, useState } from "react";
 import { useAppSelector } from "../app/hooks";
 import { Log } from "../Main";
@@ -13,9 +8,15 @@ import LogFilters from "./LogFilters";
 import LogStreamDisplay from "./LogStreamDisplay";
 import CommandPusher from "./CommandPusher/CommandPusher";
 
-
-
-const SideBarContainer: FC<{ sideBarWidth: string, logs: Log[] }> = ({ sideBarWidth, logs }) => {
+/**
+ * The SideBarContainer Component:
+ *  Contains the entire sidebar
+ *  Opens and closes based on redux state
+ */
+const SideBarContainer: FC<{ sideBarWidth: string; logs: Log[] }> = ({
+  sideBarWidth,
+  logs,
+}) => {
   const isOpen = useAppSelector(selectSideBarState);
   const [areFiltersOpen, setAreFiltersOpen] = useState<boolean>(false);
   return (
@@ -89,7 +90,7 @@ const SideBarContainer: FC<{ sideBarWidth: string, logs: Log[] }> = ({ sideBarWi
           className="main-logging-container"
         >
           <LogFilters isOpen={areFiltersOpen}></LogFilters>
-          <LogStreamDisplay logs={logs}/>
+          <LogStreamDisplay logs={logs} />
         </Box>
       </Box>
     </Drawer>
