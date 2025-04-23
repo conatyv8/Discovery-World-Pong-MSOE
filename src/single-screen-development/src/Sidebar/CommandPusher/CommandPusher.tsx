@@ -14,7 +14,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {commands, containers} from "./CommandsAndContainers";
 
 
-const CommandPusher: FC<{dropdownWidth: string, logs: Log[]}> = ({dropdownWidth, logs}) =>{
+const CommandPusher: FC<{dropdownWidth: string, logs: Log[]}> = ({}) =>{
     const [activeContainer, setActiveContainer] = useState('');
     const [activeCommand, setActiveCommand] = useState('');
     const reloadFrame = () => {
