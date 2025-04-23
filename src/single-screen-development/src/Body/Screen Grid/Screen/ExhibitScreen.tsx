@@ -99,6 +99,7 @@ const ExhibitScreen: FC<ExhibitScreenProps> = ({
           }}
         >
           <iframe
+            id={container}
             src={iframeSrc}
             style={{
               width: "1080px",

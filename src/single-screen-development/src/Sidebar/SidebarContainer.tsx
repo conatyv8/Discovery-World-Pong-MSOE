@@ -11,6 +11,7 @@ import { Log } from "../Main";
 import { selectSideBarState } from "../redux/containerInfoSlice";
 import LogFilters from "./LogFilters";
 import LogStreamDisplay from "./LogStreamDisplay";
+import CommandPusher from "./CommandPusher/CommandPusher";
 
 
 
@@ -66,6 +67,7 @@ const SideBarContainer: FC<{ sideBarWidth: string, logs: Log[] }> = ({ sideBarWi
             display: "flex",
             justifyContent: "start",
             width: "100%",
+            flexDirection:"row"
           }}
         >
           <IconButton
@@ -75,6 +77,7 @@ const SideBarContainer: FC<{ sideBarWidth: string, logs: Log[] }> = ({ sideBarWi
           >
             <FilterAltOutlinedIcon />
           </IconButton>
+          <CommandPusher dropdownWidth={sideBarWidth} logs={logs}/>
         </Box>
         <Box
           sx={{
