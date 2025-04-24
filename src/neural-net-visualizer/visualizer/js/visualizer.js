@@ -1,6 +1,6 @@
-
+import {format} from 'util'
 console.log = function(...args) {
-  const message = util.format(...args);
+  const message = format(...args);
   mqttClient.publish('app/logs/neural-net-visualizer', message);
   originalLog.apply(console, args);
 };
