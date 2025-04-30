@@ -1,10 +1,21 @@
 # Discovery World Pong
-This repository contains the code behind the Rockwell Automation "Pong" exhibit at the Discovery World Museum in Milwaukee, WI
+This forked repository contains the code behind the Rockwell Automation "Pong" exhibit at the Discovery World Museum in Milwaukee, WI. This forked repo is where the MSOE Senior Design Team 2024-2025 is making their contributions to the exhibit. The names of the Senior Design Team are as follows:
+- Virginia Conaty
+- Matthew Wehman
+- Chris Rebusit
+- Priya Audipudy
+- Eden Basso
 
 An overview of this repo's history and goals can be found in the [vision.md](/docs/API/overview/vision.md) document.
 
 # Contributing
 See [Contributing.md](/docs/CONTRIBUTING.md)
+
+Steps from Aaron Neustedter for MSOE Senior Design Team to contribute to the main repo
+1. Fork the repository.
+2. Create a branch with the form ```feature/feature-name``` on the fork. Push early and often.
+3. Once your feature starts to take shape, open a WIP PR on our repo. It's helpful for us to see your code early as this speeds review time and may help us reorient you if you are barking up the wrong tree.
+4. Once your code is ready to merge, mark it as ready and shoot one of us an email. We will review it, ask for changes, and merge it.
 
 # Development
 ## Dependencies
