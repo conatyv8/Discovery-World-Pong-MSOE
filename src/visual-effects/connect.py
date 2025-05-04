@@ -1,6 +1,6 @@
 # connect.py
 # This program connects to the MQTT broker, subscribes to human and AI paddle positions,
-# and sends only the x positions to a connected Raspberry Pi over TCP.
+# and game state updates, then sends the relevant data to a connected Raspberry Pi over TCP.
 
 import socket
 import datetime
@@ -31,6 +31,7 @@ class PaddleMQTTSubscriber:
         log("[MQTT] Connected with result code " + str(rc))
         client.subscribe("paddle1/position")  # Human paddle
         client.subscribe("paddle2/position")  # AI paddle
+        client.subscribe("game/state")        # Game state (0, 1, 2) (waiting, ready, running)
 
     def on_message(self, client, userdata, msg):
         topic = msg.topic
@@ -41,10 +42,12 @@ class PaddleMQTTSubscriber:
             message = {"type": "human", "x": payload["x"]}
         elif topic == "paddle2/position":
             message = {"type": "ai", "x": payload["x"]}
+        elif topic == "game/state":
+            message = {"type": "state", "state": payload["state"]}
         else:
             return
 
-        # Send x position to Raspberry Pi
+        # Send data to Raspberry Pi
         self.send_to_pi_callback(message)
 
     def start(self):

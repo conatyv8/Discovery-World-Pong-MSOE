@@ -194,7 +194,7 @@ services:
             context: ./src/visual-effects
         profiles: [dev, prod]
         ports:
-            - 5006:8000
+            - 5006:5006
         restart: unless-stopped
         networks:
             - pong-network
