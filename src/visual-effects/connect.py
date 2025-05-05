@@ -9,6 +9,7 @@ import threading
 import paho.mqtt.client as mqtt
 import uuid
 import sys
+
 # --- Logging utility ---
 def log(msg):
     print(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] {msg}")
@@ -42,9 +43,9 @@ class PaddleMQTTSubscriber:
         if topic == "paddle1/position":
             message = {"type": "human", "x": payload["position"]}
         elif topic == "paddle2/position":
-            message = {"type": "ai", "x": payload["x"]}
+            message = {"type": "ai", "x": payload["position"]}
         elif topic == "game/state":
-            message = {"type": "state", "state": payload["position"]}
+            message = {"type": "state", "state": payload["state"]}
         else:
             return
 
