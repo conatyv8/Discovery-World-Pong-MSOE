@@ -8,10 +8,11 @@ import json
 import threading
 import paho.mqtt.client as mqtt
 import uuid
-
+import sys
 # --- Logging utility ---
 def log(msg):
     print(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] {msg}")
+    sys.stdout.flush()
 
 # --- TCP Server Config ---
 HOST = '0.0.0.0'  # Listen on all interfaces
@@ -39,11 +40,11 @@ class PaddleMQTTSubscriber:
         log(f"[MQTT] Message on {topic}: {payload}")
 
         if topic == "paddle1/position":
-            message = {"type": "human", "x": payload["x"]}
+            message = {"type": "human", "x": payload["position"]}
         elif topic == "paddle2/position":
             message = {"type": "ai", "x": payload["x"]}
         elif topic == "game/state":
-            message = {"type": "state", "state": payload["state"]}
+            message = {"type": "state", "state": payload["position"]}
         else:
             return
 
