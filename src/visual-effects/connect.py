@@ -53,11 +53,11 @@ class PaddleMQTTSubscriber:
         elif topic == "paddle2/position":
             message = {"type": "ai", "x": payload["position"]}
         elif topic == "game/state":
-            message = {"type": "state", "state": payload["state"]}
+            message = {"type": "state", "x": payload["state"]}
         elif topic == "player1/score":
-            message = {"type": "human_score", "score": payload["score"]}
+            message = {"type": "human_score", "x": payload["score"]}
         elif topic == "player2/score":
-            message = {"type": "ai_score", "score": payload["score"]}
+            message = {"type": "ai_score", "x": payload["score"]}
         else:
             return
 
