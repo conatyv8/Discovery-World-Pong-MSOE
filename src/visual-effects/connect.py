@@ -10,6 +10,12 @@ import paho.mqtt.client as mqtt
 import uuid
 import sys
 
+#player1/score = human
+#keep track of score and if score == 3, then human win, change green, ignore any other num
+
+#player2/score = ai
+#keep track of score and if score == 3, then human loss, change red, ignore any other num
+
 # --- Logging utility ---
 def log(msg):
     print(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] {msg}")
@@ -34,6 +40,8 @@ class PaddleMQTTSubscriber:
         client.subscribe("paddle1/position")  # Human paddle
         client.subscribe("paddle2/position")  # AI paddle
         client.subscribe("game/state")        # Game state (0, 1, 2) (waiting, ready, running)
+        client.subscribe("player1/score")     # Human score 0-3
+        client.subscribe("player2/score")     # AI score 0-3
 
     def on_message(self, client, userdata, msg):
         topic = msg.topic
@@ -46,6 +54,10 @@ class PaddleMQTTSubscriber:
             message = {"type": "ai", "x": payload["position"]}
         elif topic == "game/state":
             message = {"type": "state", "state": payload["state"]}
+        elif topic == "player1/score":
+            message = {"type": "human_score", "score": payload["score"]}
+        elif topic == "player2/score":
+            message = {"type": "ai_score", "score": payload["score"]}
         else:
             return
 
