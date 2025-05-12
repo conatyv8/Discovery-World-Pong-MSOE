@@ -84,7 +84,7 @@ def start_server():
             # Define how to send MQTT data to Raspberry Pi
             def send_to_pi(msg):
                 try:
-                    payload = json.dumps(msg).encode()
+                    payload = (json.dumps(msg) + '\n').encode()
                     conn.sendall(payload)
                     log(f"[SENT TO PI]: {msg}")
                 except Exception as e:
